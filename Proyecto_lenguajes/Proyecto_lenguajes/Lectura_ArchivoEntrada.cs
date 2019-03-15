@@ -44,7 +44,17 @@ namespace Proyecto_lenguajes
 
 		private void FileSets()
 		{
-			using (StreamWriter sw = new StreamWriter("SETS_"));
+			using (StreamWriter sw = new StreamWriter("SETS_"))
+			{
+				int i = 0;
+				string Line = FileReaded[i];
+				while (Line != "SETS")
+					Line = FileReaded[i + 1];
+				while (Line != "TOKENS") 
+				{
+
+				}
+			}
 		}
 	}
 }
