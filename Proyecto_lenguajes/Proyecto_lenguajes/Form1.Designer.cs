@@ -1,6 +1,6 @@
 ﻿namespace Proyecto_lenguajes
 {
-	partial class Form1
+	partial class Analizador
 	{
 		/// <summary>
 		/// Variable del diseñador necesaria.
@@ -32,6 +32,7 @@
 			this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.archivoDeEntradaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.File = new System.Windows.Forms.RichTextBox();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -58,25 +59,35 @@
 			this.abrirToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoDeEntradaToolStripMenuItem});
 			this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
 			this.abrirToolStripMenuItem.Text = "Abrir";
 			// 
 			// archivoDeEntradaToolStripMenuItem
 			// 
 			this.archivoDeEntradaToolStripMenuItem.Name = "archivoDeEntradaToolStripMenuItem";
-			this.archivoDeEntradaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.archivoDeEntradaToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.archivoDeEntradaToolStripMenuItem.Text = "Archivo de entrada";
 			this.archivoDeEntradaToolStripMenuItem.Click += new System.EventHandler(this.archivoDeEntradaToolStripMenuItem_Click);
 			// 
-			// Form1
+			// File
+			// 
+			this.File.Location = new System.Drawing.Point(23, 51);
+			this.File.Name = "File";
+			this.File.ReadOnly = true;
+			this.File.Size = new System.Drawing.Size(306, 369);
+			this.File.TabIndex = 1;
+			this.File.Text = "";
+			// 
+			// Analizador
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.File);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
-			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Name = "Analizador";
+			this.Text = "Scanner";
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -90,6 +101,7 @@
 		private System.Windows.Forms.ToolStripMenuItem archivoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem abrirToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem archivoDeEntradaToolStripMenuItem;
+		private System.Windows.Forms.RichTextBox File;
 	}
 }
 

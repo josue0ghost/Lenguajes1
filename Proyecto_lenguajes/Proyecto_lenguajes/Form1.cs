@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace Proyecto_lenguajes
 {
-	public partial class Form1 : Form
+	public partial class Analizador : Form
 	{
-		FileLecture lae = new FileLecture();
+		FileReader fr = new FileReader();
 
-		public Form1()
+		public Analizador()
 		{
 			InitializeComponent();
 		}
@@ -24,7 +24,7 @@ namespace Proyecto_lenguajes
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.ShowDialog();
 			string path = openFileDialog.FileName;
-			lae.Read(path);
+			File.Text = fr.Read(path);			
 		}
 	}
 }
