@@ -26,5 +26,10 @@ namespace Proyecto_lenguajes
 			string path = openFileDialog.FileName;
 			File.Text = fr.Read(path);			
 		}
+
+		private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			fr.Analize(File.Text);
+		}
 	}
 }

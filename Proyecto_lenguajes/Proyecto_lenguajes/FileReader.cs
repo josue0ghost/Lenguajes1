@@ -23,11 +23,14 @@ namespace Proyecto_lenguajes
 			return freaded;
 		}
 
-		public void Analize(string FileText)
+		public void Analize(string FileContent)
 		{
 			string Error = "";
-			List<string> FileReaded = new List<string>(FileText.Split('\n'));
-			ContainsAllSections(FileReaded, ref Error);
+			string Sets = "", Tokens = "", Actions = "", Errors = "";
+			if (ContainsAllSections(FileContent, ref Error))
+			{
+				Split(FileContent, ref Sets, ref Tokens, ref Actions, ref Error);
+			}
 		}
 
 		/// <summary>
@@ -37,7 +40,7 @@ namespace Proyecto_lenguajes
 		/// <param name="FileContent">File lines stored in a List of Strings</param>
 		/// <param name="Error">Referenced value gets a string if exist a error in <paramref name="FileContent"/></param>
 		/// <returns></returns>
-		private bool ContainsAllSections(List<string> FileContent, ref string Error)
+		private bool ContainsAllSections(string FileContent, ref string Error)
 		{
 			this.ContainsSets = FindSection("SETS", FileContent);
 			if (!FindSection("TOKENS", FileContent, ref Error)) return false;
@@ -55,10 +58,9 @@ namespace Proyecto_lenguajes
 		/// <param name="FileContent"></param>
 		/// <param name="Error"></param>
 		/// <returns></returns>
-		internal bool FindSection(string KeyWord, List<string> FileContent, ref string Error)
-		{
-			string ErrorType = FileContent.Find(str => str.Contains(KeyWord));
-			if (ErrorType == null)
+		internal bool FindSection(string KeyWord, string FileContent, ref string Error)
+		{			
+			if (!FileContent.Contains(KeyWord))
 			{
 				Error = "Se esperaba '" + KeyWord + "'";
 				return false;
@@ -66,14 +68,32 @@ namespace Proyecto_lenguajes
 			return true;
 		}
 
-		internal bool FindSection(string KeyWord, List<string> FileContent)
-		{
-			string ErrorType = FileContent.Find(str => str.Contains(KeyWord));
-			if (ErrorType == null)
+		internal bool FindSection(string KeyWord, string FileContent)
+		{			
+			if (!FileContent.Contains(KeyWord))
 			{
 				return false;
 			}
 			return true;
+		}
+		
+		/// <summary>
+		/// Splits <paramref name="FileContent"/> to get all file sections in other strings
+		/// </summary>
+		/// <param name="FileContent"></param>
+		/// <param name="Sets"></param>
+		/// <param name="Tokens"></param>
+		/// <param name="Actions"></param>
+		/// <param name="Errors"></param>
+		internal void Split(string FileContent, ref string Sets, ref string Tokens, ref string Actions, ref string Errors)
+		{
+			Errors = FileContent.Substring(FileContent.IndexOf("ERROR"));
+			Actions = FileContent.Substring(FileContent.IndexOf("ACTIONS"), (FileContent.IndexOf("ERROR") - FileContent.IndexOf("ACTIONS")));
+			Tokens = FileContent.Substring(FileContent.IndexOf("TOKENS"), (FileContent.IndexOf("ACTIONS") - FileContent.IndexOf("TOKENS")));
+			if (this.ContainsSets)
+			{
+				Sets = FileContent.Substring(FileContent.IndexOf("SETS"), (FileContent.IndexOf("TOKENS") - FileContent.IndexOf("SETS")));
+			}
 		}
 	}
 }

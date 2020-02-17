@@ -33,13 +33,15 @@
 			this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.archivoDeEntradaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.File = new System.Windows.Forms.RichTextBox();
+			this.analizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.archivoToolStripMenuItem});
+            this.archivoToolStripMenuItem,
+            this.analizarToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(800, 24);
@@ -59,7 +61,7 @@
 			this.abrirToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoDeEntradaToolStripMenuItem});
 			this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.abrirToolStripMenuItem.Text = "Abrir";
 			// 
 			// archivoDeEntradaToolStripMenuItem
@@ -77,6 +79,13 @@
 			this.File.Size = new System.Drawing.Size(306, 369);
 			this.File.TabIndex = 1;
 			this.File.Text = "";
+			// 
+			// analizarToolStripMenuItem
+			// 
+			this.analizarToolStripMenuItem.Name = "analizarToolStripMenuItem";
+			this.analizarToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+			this.analizarToolStripMenuItem.Text = "Analizar";
+			this.analizarToolStripMenuItem.Click += new System.EventHandler(this.analizarToolStripMenuItem_Click);
 			// 
 			// Analizador
 			// 
@@ -102,6 +111,7 @@
 		private System.Windows.Forms.ToolStripMenuItem abrirToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem archivoDeEntradaToolStripMenuItem;
 		private System.Windows.Forms.RichTextBox File;
+		private System.Windows.Forms.ToolStripMenuItem analizarToolStripMenuItem;
 	}
 }
 
