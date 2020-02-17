@@ -9,7 +9,7 @@ namespace Proyecto_lenguajes
 {
 	class FileReader
 	{
-
+		public Dictionary<string, string> Sets { get; set; }
 		public string Error { get; set; }
 		private bool ContainsSets { get; set; }
 
@@ -29,8 +29,10 @@ namespace Proyecto_lenguajes
 			string Sets = "", Tokens = "", Actions = "", Errors = "";
 			if (ContainsAllSections(FileContent, ref Error))
 			{
-				Split(FileContent, ref Sets, ref Tokens, ref Actions, ref Error);
+				Split(FileContent, ref Sets, ref Tokens, ref Actions, ref Errors);
 			}
+
+			this.Error = Error;
 		}
 
 		/// <summary>
@@ -88,12 +90,43 @@ namespace Proyecto_lenguajes
 		internal void Split(string FileContent, ref string Sets, ref string Tokens, ref string Actions, ref string Errors)
 		{
 			Errors = FileContent.Substring(FileContent.IndexOf("ERROR"));
-			Actions = FileContent.Substring(FileContent.IndexOf("ACTIONS"), (FileContent.IndexOf("ERROR") - FileContent.IndexOf("ACTIONS")));
-			Tokens = FileContent.Substring(FileContent.IndexOf("TOKENS"), (FileContent.IndexOf("ACTIONS") - FileContent.IndexOf("TOKENS")));
+			Actions = FileContent.Substring(FileContent.IndexOf("ACTIONS") + 7, (FileContent.IndexOf("ERROR") - FileContent.IndexOf("ACTIONS")) - 7);
+			Tokens = FileContent.Substring(FileContent.IndexOf("TOKENS") + 6, (FileContent.IndexOf("ACTIONS") - FileContent.IndexOf("TOKENS")) - 6);
 			if (this.ContainsSets)
 			{
-				Sets = FileContent.Substring(FileContent.IndexOf("SETS"), (FileContent.IndexOf("TOKENS") - FileContent.IndexOf("SETS")));
+				Sets = FileContent.Substring(FileContent.IndexOf("SETS") + 4, (FileContent.IndexOf("TOKENS") - FileContent.IndexOf("SETS")) - 4);
 			}
+		}
+
+		internal void SETS(string Sets)
+		{
+			string[] SetsArray = Sets.Split('\n');
+
+			foreach (var item in SetsArray)
+			{
+				string ID = item.Substring(0, item.IndexOf("="));
+				string Set = item.Substring(item.IndexOf("="));				
+			}
+		}
+
+		internal bool AnalizeSet(string Set)
+		{
+			bool ValidSet = false;
+			Set.Trim();
+			char[] aSet = Set.ToCharArray();
+			if (aSet[0] != '\'' || aSet[0] != 'C') return ValidSet;
+			
+			// TO DO
+			// hay error si lo que está entre comillas tiene tamño mayor a 1 
+			// Si hay un punto debe estar después de una comilla o paréntesis
+			// Si hay un punto debe estar seguido de otro punto (si este no está entre comillas)
+			// Si hay un signo + debe estar seguido de una comilla o C
+			while (ValidSet == false)
+			{
+				
+			}
+
+			return true;
 		}
 	}
 }
