@@ -32,6 +32,12 @@ namespace Proyecto_lenguajes
 				Split(FileContent, ref Sets, ref Tokens, ref Actions, ref Errors);
 			}
 
+			if (this.ContainsSets)
+			{
+				Error = SETS(Sets);
+			}
+			
+
 			this.Error = Error;
 		}
 
@@ -64,7 +70,7 @@ namespace Proyecto_lenguajes
 		{			
 			if (!FileContent.Contains(KeyWord))
 			{
-				Error = "Se esperaba '" + KeyWord + "'";
+				Error = "Se esperaba '".Concat(KeyWord).Concat("'").ToString();
 				return false;
 			}
 			return true;
@@ -98,33 +104,138 @@ namespace Proyecto_lenguajes
 			}
 		}
 
-		internal void SETS(string Sets)
+		internal string SETS(string Sets)
 		{
 			string[] SetsArray = Sets.Split('\n');
 
-			foreach (var item in SetsArray)
+			for (int i = 0; i < SetsArray.Length; i++)
 			{
-				string ID = item.Substring(0, item.IndexOf("="));
-				string Set = item.Substring(item.IndexOf("="));				
+				if (SetsArray[i] != "")
+				{
+					if (!AnalizeSet(SetsArray[i]))
+					{
+						return this.Error;
+					}
+				}				
 			}
+
+			return "";
 		}
 
 		internal bool AnalizeSet(string Set)
 		{
 			bool ValidSet = false;
 			Set.Trim();
-			char[] aSet = Set.ToCharArray();
-			if (aSet[0] != '\'' || aSet[0] != 'C') return ValidSet;
+
+			string id = Set.Substring(0, Set.IndexOf(Utilities.EqualsSign));
+			char[] expression = Set.Substring(Set.IndexOf(Utilities.EqualsSign) + 1).Trim().ToCharArray();			
+
+			for (int i = 0; i < expression.Length; i++)
+			{
+				// expresiones '<char>'
+				if (expression[i] == Utilities.CharLimiter)
+				{
+					try
+					{
+						if (expression[i + 2] != Utilities.CharLimiter)
+						{
+							this.Error = "No se puede convertir explicitamente <string> en <char>";
+							return ValidSet;
+						}
+					}
+					catch (Exception)
+					{
+						this.Error = "Se esperaba caracter de cierre: ".Concat(Utilities.CharLimiter.ToString()).ToString();
+						return ValidSet;
+					}
+					
+					i += 2;
+				}
+
+				// para funciones CHR
+				else if (expression[i] == 'C')
+				{
+					try
+					{
+						if (expression[i+1] != 'H' || expression[i+2] != 'R')
+						{
+							this.Error = "No se reconoce la funcion escrita";
+							return ValidSet;
+						}
+
+						if (expression[i + 3] != Utilities.OpenAgrupation)
+						{
+							this.Error = "Se esperaba caracter de apertura: ".Concat(Utilities.OpenAgrupation.ToString()).ToString();
+							return ValidSet;
+						}
+
+						i += 4;
+
+						// verificar el formato para enteros "(<int>)"
+						while (expression[i] != Utilities.CloseAgrupation)
+						{							
+							if (!int.TryParse(expression[i].ToString(), out int x))
+							{
+								this.Error = "Se esperaba numero entero";
+								return ValidSet;
+							}
+							i++;
+						}
+					}
+					catch (Exception)
+					{
+						this.Error = "Formato de función CHR(<int>) incorrecto";
+						return ValidSet;
+					}
+				}
+
+				// Maneja los rangos ("..")
+				else if (expression[i] == Utilities.Range)
+				{
+					try
+					{
+						if (expression[i + 1] != Utilities.Range)
+						{
+							this.Error = "Se esperaba: ".Concat(Utilities.Range.ToString()).ToString();
+							return ValidSet;
+						}	
+					}
+					catch (Exception)
+					{
+						this.Error = "Formato de set incorrecto";
+						return ValidSet;
+					}					
+					i += 1;
+				}
+				else if (expression[i] == Utilities.ConcatSign)
+				{
+					try
+					{
+						if (!(expression[i + 1] == '\'' || expression[i + 1] == 'C'))
+						{
+							this.Error = "Concatenación incorrecta";
+							return ValidSet;
+						}
+					}
+					catch (Exception)
+					{
+						this.Error = "Se esperaba expresion de tipo '<char>' o CHR(<int>)";
+						return ValidSet;
+					}										
+				}
+				else // precede un caracter no esperado
+				{
+					this.Error = "Caracter no esperado";
+					return ValidSet;
+				}
+			}
 			
 			// TO DO
 			// hay error si lo que está entre comillas tiene tamño mayor a 1 
 			// Si hay un punto debe estar después de una comilla o paréntesis
 			// Si hay un punto debe estar seguido de otro punto (si este no está entre comillas)
 			// Si hay un signo + debe estar seguido de una comilla o C
-			while (ValidSet == false)
-			{
-				
-			}
+
 
 			return true;
 		}
