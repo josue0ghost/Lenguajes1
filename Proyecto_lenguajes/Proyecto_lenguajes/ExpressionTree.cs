@@ -30,8 +30,30 @@ namespace Proyecto_lenguajes
 	{
 		public Node Root { get; set; }
 		public string Error;
-		private Stack<string> items;
+		private Stack<string> tokens;
 		private Stack<ExpressionTree> trees;
+		private int lastPrecedence = int.MaxValue;
+
+		private void GetLastPrecedence(string token)
+		{
+			if (token == "(" || token == ")")
+			{
+				lastPrecedence = 4;
+			}
+			else if (token == "*" || token == "+" || token == "?")
+			{
+				lastPrecedence = 3;
+			}
+			else if (token == " ")
+			{
+				lastPrecedence = 2;
+			}
+			else if (token == "|")
+			{
+				lastPrecedence = 1;
+			}
+		}
+		
 
 		public ExpressionTree()
 		{
@@ -50,13 +72,14 @@ namespace Proyecto_lenguajes
 			{
 				if (RE[i] == '(')
 				{
-					items.Push(RE[i].ToString());
+					tokens.Push(RE[i].ToString());
+					GetLastPrecedence("(");
 				}
 				else if (RE[i] == ')')
 				{
-					while (items.Count > 0 && items.Peek() != "(")
+					while (tokens.Count > 0 && tokens.Peek() != "(")
 					{
-						if (items.Count == 0)
+						if (tokens.Count == 0)
 						{
 							this.Error = "Faltan operandos en la expresion regular asignada a ".Concat(id)
 								.Concat(". No se puede cerrar una agrupacion sin antes abrirla").ToString();
@@ -68,9 +91,8 @@ namespace Proyecto_lenguajes
 							return;
 						}
 
-						ExpressionTree temp = new ExpressionTree();
-						Node node = new Node(items.Pop());
-						temp.Root = node;
+						ExpressionTree temp = new ExpressionTree();						
+						temp.Root = new Node(tokens.Pop());
 
 						ExpressionTree Right = trees.Pop();
 						temp.Root.Right = Right.Root;
@@ -79,14 +101,13 @@ namespace Proyecto_lenguajes
 
 						trees.Push(temp);
 					}
-
-					items.Pop();
+					tokens.Pop();
+					GetLastPrecedence(")");
 				}
 				else if (RE[i] == '?' || RE[i] == '*' || RE[i] == '+')
 				{
-					ExpressionTree temp = new ExpressionTree();
-					Node node = new Node(RE[i].ToString());
-					temp.Root = node;
+					ExpressionTree temp = new ExpressionTree();					
+					temp.Root = new Node(RE[i].ToString());
 
 					if (trees.Count == 0)
 					{
@@ -99,10 +120,20 @@ namespace Proyecto_lenguajes
 					temp.Root.Left = Left.Root;
 
 					trees.Push(temp);
+					GetLastPrecedence(RE[i].ToString());
 				}
-				else if (RE[i] == '|')
+				else if (RE[i] == '|' && tokens.Count > 0)
 				{
+					string top = tokens.Peek();
+					int lstPrcdnc = this.lastPrecedence;
+					if (top != "(")
+					{
+						GetLastPrecedence(tokens.Peek());
+						if (lstPrcdnc < this.lastPrecedence)
+						{
 
+						}
+					}
 				}
 				else if (RE[i] == Utilities.CharLimiter)
 				{
@@ -110,7 +141,7 @@ namespace Proyecto_lenguajes
 					{
 						if (RE[i + 2] == Utilities.CharLimiter)
 						{
-							items.Push(RE[i + 1].ToString());
+							tokens.Push(RE[i + 1].ToString());
 						}
 						else
 						{
@@ -133,7 +164,7 @@ namespace Proyecto_lenguajes
 				{
 					if (set != "")
 					{
-						items.Push(set); // se toma ese id y se agrega a los items de la RE
+						tokens.Push(set); // se toma ese id y se agrega a los items de la RE
 						set = ""; // se reinicia set para un nuevo id
 					}
 				}
