@@ -10,7 +10,8 @@ namespace Proyecto_lenguajes
 	class FileReader
 	{
 		public Dictionary<string, string> Sets { get; set; }
-		public Dictionary<string, List<string>> Tokens { get; set; }
+		public Dictionary<string, ExpressionTree> Tokens { get; set; }
+		public Dictionary<string, List<string>> Actions { get; set; }
 		public string Error { get; set; }
 		private bool ContainsSets { get; set; }
 
@@ -283,14 +284,11 @@ namespace Proyecto_lenguajes
 		{
 			bool ValidToken = true;
 
-			List<string> items = new List<string>();
-
 			if (!Token.Contains(Utilities.EqualsSign))
 			{
-				this.Error = "Formato de token incorrecto";
+				this.Error = "Formato de token incorrecto. Se esperaba asignacion.";
 				return !ValidToken;
-			}
-			
+			}			
 
 			string id = Token.Substring(0, Token.IndexOf(Utilities.EqualsSign)).Replace('\t'.ToString(), "").Replace(" ", "");			
 
@@ -299,6 +297,7 @@ namespace Proyecto_lenguajes
 			{
 				string num = "";
 				char[] idChar = id.ToCharArray();
+				// los numeros deberian empezar en la posicion 5 del arreglo de caracteres
 				for (int i = 5; i < idChar.Length; i++)
 				{
 					if (int.TryParse(idChar[i].ToString(), out _))
@@ -318,41 +317,31 @@ namespace Proyecto_lenguajes
 				return !ValidToken;
 			}
 
+			if (Tokens.ContainsKey(id))
+			{
+				this.Error = id.Concat(" ya fue declarado previamente").ToString();
+				return !ValidToken;
+			}
+			
 			char[] RE = Token.Substring(Token.IndexOf(Utilities.EqualsSign) + 1).Trim().ToCharArray();
 
-			for (int i = 0; i < RE.Length; i++)
-			{				
-				if (RE[i] == Utilities.CharLimiter)
+			try
+			{
+				if (RE[0] == '|' || RE[0] == '?' || RE[0] == '*' || RE[0] == '+')
 				{
-					try
-					{
-						if (RE[i + 2] != Utilities.CharLimiter)
-						{
-							this.Error = "No se puede convertir explicitamente <string> en <char>. Falta caracter de cierre: ".Concat(Utilities.CharLimiter.ToString()).ToString();
-							return ValidToken;
-						}
-						else
-						{
-							items.Add(RE[i + 1].ToString());
-						}
-					}
-					catch (Exception)
-					{
-						this.Error = "Se esperaba caracter de cierre: ".Concat(Utilities.CharLimiter.ToString()).ToString();
-						return ValidToken;
-					}
-
-					i += 2;
-				}
-				else
-				{
-					// identificar id de expresiones regulares
-					while (true)
-					{
-
-					}
+					this.Error = "Una expresion regular no puede iniciar con operadores";
+					return !ValidToken;
 				}
 			}
+			catch (Exception)
+			{
+				this.Error = "No existe la definicion de una expresion regular en ".Concat(id).ToString();
+			}
+
+			ExpressionTree ET = new ExpressionTree();
+			ET.CreateTree(RE);
+
+			Tokens.Add(id, ET);
 
 			return ValidToken;
 		}
