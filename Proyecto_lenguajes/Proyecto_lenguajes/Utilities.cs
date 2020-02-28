@@ -10,10 +10,12 @@ namespace Proyecto_lenguajes
 	{
 		public static char CharLimiter = '\'';
 		public static char StringLimiter = '"';
-		public static char OpenAgrupation = '(';
-		public static char CloseAgrupation = ')';
+		public static char OpeningBracket = '(';
+		public static char ClosingBracket = ')';
 		public static string EqualsSign = "=";
 		public static char Range = '.';
 		public static char ConcatSign = '+';
+		public static char OpeningBrace = '{';
+		public static char ClosingBrace = '}';
 	}
 }

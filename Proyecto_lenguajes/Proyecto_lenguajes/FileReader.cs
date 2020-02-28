@@ -41,7 +41,14 @@ namespace Proyecto_lenguajes
 			{
 				Error = TOKENS(Tokens);
 			}
-
+			if (Error == "")
+			{
+				Error = ACTIONS(Actions);
+			}
+			if (Error == "")
+			{
+				Error = ERRORS(Errors);
+			}
 			this.Error = Error;
 		}
 
@@ -175,16 +182,16 @@ namespace Proyecto_lenguajes
 							return !ValidSet;
 						}
 
-						if (expression[i + 3] != Utilities.OpenAgrupation)
+						if (expression[i + 3] != Utilities.OpeningBracket)
 						{
-							this.Error = "Se esperaba caracter de apertura: ".Concat(Utilities.OpenAgrupation.ToString()).ToString();
+							this.Error = "Se esperaba caracter de apertura: ".Concat(Utilities.OpeningBracket.ToString()).ToString();
 							return !ValidSet;
 						}
 
 						i += 4;
 
 						// verificar el formato para enteros "(<int>)"
-						while (expression[i] != Utilities.CloseAgrupation)
+						while (expression[i] != Utilities.ClosingBracket)
 						{							
 							if (!int.TryParse(expression[i].ToString(), out int x))
 							{
@@ -348,6 +355,127 @@ namespace Proyecto_lenguajes
 			}
 
 			return ValidToken;
+		}
+
+		internal string ACTIONS(string Actions)
+		{
+			string sActions = Actions.Replace(" ", "").Replace('\t'.ToString(), "");
+
+			if (sActions.IndexOf("RESERVADAS", StringComparison.OrdinalIgnoreCase) < 0)
+			{
+				this.Error = "Se esperaba funcion RESERVADAS() en ACTIONS";
+				return this.Error;
+			}
+
+			if (!AnalizeAction(sActions))
+			{
+				return this.Error;
+			}
+
+			return "";
+		}
+
+		internal bool AnalizeAction(string Action)
+		{
+			bool ValidAction = true;
+			char[] delimiterChars = { '{', '}' };
+			string[] temp = Action.Split(delimiterChars);
+
+			for (int i = 0; i < temp.Length; i++)
+			{
+				if (i % 2 == 0) // identificadores de funciones
+				{
+					if (!ActionsID(temp[i]))
+					{
+						return !ValidAction;
+					}
+				}
+				else // firmas
+				{
+					if (!ActionsAsigns(temp[i]))
+					{
+						return !ValidAction;
+					}
+				}
+			}
+
+			return ValidAction;
+		}
+
+		private bool ActionsID(string ID)
+		{
+			bool ValidID = true;
+
+			char[] charID = ID.Replace('\n'.ToString(), "").ToCharArray();
+
+			// no puede iniciar con un numero
+			if (int.TryParse(charID[0].ToString(), out _))
+			{
+				this.Error = "Se esperaba un identificador. No puede iniciarse un identificador con un caracter numerico";
+				return !ValidID;
+			}
+			// terminacion en "()"
+			if (charID[charID.Length - 1] != Utilities.ClosingBracket || charID[charID.Length - 2] != Utilities.OpeningBracket)
+			{
+				this.Error = "Sintaxis de funcion incorrecta. Se esperaba '()'";
+				return !ValidID;
+			}
+			return ValidID;
+		}
+
+		private bool ActionsAsigns(string Asign)
+		{
+			bool ValidAsign = true;
+
+			string[] AsignsArray = Asign.Split('\n');
+
+			foreach (var item in AsignsArray)
+			{
+				string[] temp = item.Split(Utilities.EqualsSign.ToCharArray());
+
+				if (temp.Length != 2)
+				{
+					this.Error = "Se esperaba asignacion";
+					return !ValidAsign;
+				}
+				else if (!int.TryParse(temp[0], out _))
+				{
+					this.Error = "Se esperaba identificador de tipo <int>";
+					return !ValidAsign;
+				}
+				else if (!temp[1].StartsWith("'") || !temp[1].EndsWith("'"))
+				{
+					this.Error = "Se esperaba un valor con sintaxis: '<string>'";
+					return !ValidAsign;
+				}
+			}
+
+			return ValidAsign;
+		}
+
+		internal string ERRORS(string Error)
+		{
+			string[] ErrorArrays = Error.Replace(" ", "").Replace('\t'.ToString(), "").Split('\n');
+
+			foreach (var item in ErrorArrays)
+			{
+				string[] temp = item.Split(Utilities.EqualsSign.ToCharArray());
+
+				if (temp.Length != 2)
+				{
+					return "Sintaxis de asignacion de errores erronea";
+				}
+				else if (temp[0].IndexOf("ERROR") < 0)
+				{
+					return "El error no contiene el sufijo 'ERROR'";
+				}
+				else if (!int.TryParse(temp[1], out _))
+				{
+					return "Sintaxis de asignacion de ERROR erronea. Se esperaba valor de tipo <int>";
+				}
+			}
+
+			return "";
 		}
 	}
 }
