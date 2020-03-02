@@ -17,5 +17,6 @@ namespace Proyecto_lenguajes
 		public static char ConcatSign = '+';
 		public static char OpeningBrace = '{';
 		public static char ClosingBrace = '}';
+		public static string[] Op = {"*", "?", "+", ".", "|" };
 	}
 }

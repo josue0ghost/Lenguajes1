@@ -29,9 +29,9 @@ namespace Proyecto_lenguajes
 	class ExpressionTree
 	{
 		public Node Root { get; set; }
-		public string Error;
-		private Stack<string> tokens;
-		private Stack<ExpressionTree> trees;
+		public string Error = "";
+		private Stack<string> tokens = new Stack<string>();
+		private Stack<ExpressionTree> trees = new Stack<ExpressionTree>();
 		private int lastPrecedence = int.MaxValue;
 
 		private void GetLastPrecedence(string token)
@@ -44,7 +44,7 @@ namespace Proyecto_lenguajes
 			{
 				lastPrecedence = 3;
 			}
-			else if (token == " ")
+			else if (token == ".")
 			{
 				lastPrecedence = 2;
 			}
@@ -65,29 +65,36 @@ namespace Proyecto_lenguajes
 		/// Algoritmo de creacion de arbol de expresion a traves de expresion regular
 		/// </summary>
 		/// <param name="RE"></param>
-		public void CreateTree(char[] RE, string id)
+		public void CreateTree(List<string> RE, string id)
 		{
 			string set = "";
-			for (int i = 0; i < RE.Length; i++)
-			{
-				if (RE[i] == '(')
+			int lstPrcdnc = 0;
+			for (int i = 0; i < RE.Count; i++)
+			{				
+				if (tokens.Count > 0)
+				{
+					lstPrcdnc = this.lastPrecedence;
+					GetLastPrecedence(tokens.Peek());
+				}
+				
+				if (RE[i] == "(")
 				{
 					tokens.Push(RE[i].ToString());
-					GetLastPrecedence("(");
+					GetLastPrecedence(RE[i]);
 				}
-				else if (RE[i] == ')')
+				else if (RE[i] == ")")
 				{
 					while (tokens.Count > 0 && tokens.Peek() != "(")
 					{
 						if (tokens.Count == 0)
 						{
-							this.Error = "Faltan operandos en la expresion regular asignada a ".Concat(id)
-								.Concat(". No se puede cerrar una agrupacion sin antes abrirla").ToString();
+							this.Error = "Faltan operandos en la expresion regular asignada a " + id
+								+ ". No se puede cerrar una agrupacion sin antes abrirla";
 							return;
 						}
 						if (trees.Count < 2)
 						{
-							this.Error = "Faltan operandos en la expresion regular asignada a ".Concat(id).ToString();
+							this.Error = "Faltan operandos en la expresion regular asignada a " + id;
 							return;
 						}
 
@@ -104,71 +111,94 @@ namespace Proyecto_lenguajes
 					tokens.Pop();
 					GetLastPrecedence(")");
 				}
-				else if (RE[i] == '?' || RE[i] == '*' || RE[i] == '+')
+				else if (Utilities.Op.Contains(RE[i]))
 				{
-					ExpressionTree temp = new ExpressionTree();					
-					temp.Root = new Node(RE[i].ToString());
-
-					if (trees.Count == 0)
+					if (RE[i] == "?" || RE[i] == "*" || RE[i] == "+")
 					{
-						this.Error = "Faltan operandos";
-						return;
-					}
+						ExpressionTree temp = new ExpressionTree();
+						temp.Root = new Node(RE[i].ToString());
 
-					ExpressionTree Left = new ExpressionTree();
-					Left = trees.Pop();
-					temp.Root.Left = Left.Root;
-
-					trees.Push(temp);
-					GetLastPrecedence(RE[i].ToString());
-				}
-				else if (RE[i] == '|' && tokens.Count > 0)
-				{
-					string top = tokens.Peek();
-					int lstPrcdnc = this.lastPrecedence;
-					if (top != "(")
-					{
-						GetLastPrecedence(tokens.Peek());
-						if (lstPrcdnc < this.lastPrecedence)
+						if (trees.Count == 0)
 						{
-
-						}
-					}
-				}
-				else if (RE[i] == Utilities.CharLimiter)
-				{
-					try
-					{
-						if (RE[i + 2] == Utilities.CharLimiter)
-						{
-							tokens.Push(RE[i + 1].ToString());
-						}
-						else
-						{
-							this.Error = "Formato de token incorrecto. Se esperaba expresion de tipo '<char>'";
+							this.Error = "Faltan operandos en la expresion regular asignada a " + id;
 							return;
 						}
-						i += 2;
+
+						ExpressionTree Left = new ExpressionTree();
+						Left = trees.Pop();
+						temp.Root.Left = Left.Root;
+
+						trees.Push(temp);
+						GetLastPrecedence(RE[i].ToString());
 					}
-					catch (Exception)
+					else if (tokens.Count > 0 && tokens.Peek() != "(" && this.lastPrecedence < lstPrcdnc)
 					{
-						this.Error = "Formato de token incorrecto. Se esperaba expresion de tipo '<char>'";
-						return;
+						ExpressionTree temp = new ExpressionTree();
+						temp.Root = new Node(RE[i].ToString());
+
+						if (trees.Count() < 2)
+						{
+							this.Error = "Faltan operandos en la expresion regular asignada a " + id;
+							return;
+						}
+
+						ExpressionTree ctree = trees.Pop();
+						temp.Root.Right = ctree.Root;
+
+						ctree = trees.Pop();
+						temp.Root.Left = ctree.Root;
+
+						trees.Push(temp);						
 					}
-				}
-				else if (RE[i] != ' ' || RE[i] != '\t')
-				{
-					set.Concat(RE[i].ToString());
-				}
-				else if (RE[i] == ' ' || RE[i] == '\t')
-				{
-					if (set != "")
+					else if (RE[i] == "|" || RE[i] == ".")
 					{
-						tokens.Push(set); // se toma ese id y se agrega a los items de la RE
-						set = ""; // se reinicia set para un nuevo id
+						tokens.Push(RE[i]);
 					}
-				}
+				}				
+				else
+				{
+					ExpressionTree temp = new ExpressionTree();
+					temp.Root = new Node(RE[i]);
+
+					trees.Push(temp);
+				}									
 			}
+
+			while (tokens.Count > 0)
+			{
+				string op = tokens.Pop();
+				if (op == "(" || trees.Count < 2)
+				{
+					this.Error = "Faltan operandos en la expresion regular asignada a " + id;
+					return;
+				}
+
+				ExpressionTree temp = new ExpressionTree();
+				temp.Root = new Node(op);
+
+				ExpressionTree ctree = new ExpressionTree();
+				ctree = trees.Pop();
+				temp.Root.Right = ctree.Root;
+
+				ctree = trees.Pop();
+				temp.Root.Left = ctree.Root;
+
+				trees.Push(temp);
+			}
+
+			if (trees.Count != 1)
+			{
+				this.Error = "Faltan operandos en la expresion regular asignada a " + id;
+				return;
+			}
+
+			ExpressionTree result = trees.Pop();
+
+			this.Root = new Node(".")
+			{
+				Right = new Node("#"),
+				Left = result.Root
+			};
 		}
 
 

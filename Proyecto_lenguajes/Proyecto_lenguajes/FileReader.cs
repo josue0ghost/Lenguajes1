@@ -9,9 +9,11 @@ namespace Proyecto_lenguajes
 {
 	class FileReader
 	{
-		public Dictionary<string, string> Sets { get; set; }
-		public Dictionary<string, ExpressionTree> Tokens { get; set; }
-		public Dictionary<string, List<string>> Actions { get; set; }
+		public Dictionary<string, string> Sets = new Dictionary<string, string>();
+		public Dictionary<string, ExpressionTree> Tokens = new Dictionary<string, ExpressionTree>();
+		public Dictionary<string, List<string>> Actions = new Dictionary<string, List<string>>();
+		public Dictionary<int, string> Errors = new Dictionary<int, string>();
+
 		public string Error { get; set; }
 		private bool ContainsSets { get; set; }
 
@@ -84,7 +86,7 @@ namespace Proyecto_lenguajes
 		{			
 			if (!FileContent.Contains(KeyWord))
 			{
-				Error = "Se esperaba '".Concat(KeyWord).Concat("'").ToString();
+				Error = "Se esperaba '" + KeyWord + "'";
 				return false;
 			}
 			return true;
@@ -250,7 +252,11 @@ namespace Proyecto_lenguajes
 				}
 			}
 
-			if (!Sets.ContainsKey(id))
+			if (Sets == null)
+			{
+				Sets.Add(id, value);
+			}
+			else if (!Sets.ContainsKey(id))
 			{
 				Sets.Add(id, value);
 			}
@@ -317,29 +323,87 @@ namespace Proyecto_lenguajes
 				return !ValidToken;
 			}
 
-			if (Tokens.ContainsKey(id))
+			if (Token != null && Tokens.ContainsKey(id))
 			{
-				this.Error = id.Concat(" ya fue declarado previamente").ToString();
-				return !ValidToken;
-			}
+				this.Error = id + " ya fue declarado previamente";
+				return !ValidToken;				
+			}			
 			
 			char[] RE = Token.Substring(Token.IndexOf(Utilities.EqualsSign) + 1).Trim().ToCharArray();
 
-			try
+			bool lastWasST = false;
+			bool lastWasOP = false;
+			List<string> tlist = new List<string>();
+			string set = "";
+			for (int i = 0; i < RE.Length; i++)
 			{
-				if (RE[0] == '|' || RE[0] == '?' || RE[0] == '*' || RE[0] == '+')
+				if (RE[i] == Utilities.CharLimiter)
 				{
-					this.Error = "Una expresion regular no puede iniciar con operadores";
-					return !ValidToken;
+					try
+					{
+						if (RE[i + 2] == Utilities.CharLimiter)
+						{
+							if (lastWasST || lastWasOP)
+							{
+								tlist.Add(".");
+							}
+								
+							tlist.Add(RE[i + 1].ToString());
+							lastWasST = true;
+							i += 2;
+						}
+						else
+						{
+							this.Error = "Se esperaba expresion de tipo '<char>'";
+							return !ValidToken;
+						}
+						
+					}
+					catch (Exception)
+					{
+						this.Error = "Se esperaba expresion de tipo '<char>'";
+						return !ValidToken;
+					}
 				}
-			}
-			catch (Exception)
-			{
-				this.Error = "No existe la definicion de una expresion regular en ".Concat(id).ToString();
+				else if (RE[i] == '(' || RE[i] == ')' || RE[i] == '|')
+				{
+					tlist.Add(RE[i].ToString());
+					lastWasST = false;
+					lastWasOP = false;
+				}
+				else if (RE[i] == '+' || RE[i] == '?' || RE[i] == '*')
+				{
+					tlist.Add(RE[i].ToString());
+					lastWasOP = true;
+					lastWasST = false;
+				}
+				else if (RE[i] == ' ' || RE[i] == '\t')
+				{
+					if (set != "")
+					{
+						if (lastWasST || lastWasOP)
+						{
+							tlist.Add(".");
+						}							
+						tlist.Add(set);							
+					}					
+					lastWasST = true;
+					set = "";
+				}
+				else
+				{
+					set += RE[i].ToString();
+				}
 			}
 
 			ExpressionTree ET = new ExpressionTree();
-			ET.CreateTree(RE);
+			ET.CreateTree(tlist, id);
+
+			if (ET.Error != "")
+			{
+				this.Error = ET.Error;
+				return !ValidToken;
+			}
 
 			Tokens.Add(id, ET);
 
@@ -370,12 +434,15 @@ namespace Proyecto_lenguajes
 			char[] delimiterChars = { '{', '}' };
 			string[] temp = Action.Split(delimiterChars);
 
+			string id = "";
+			string actions = "";
 			for (int i = 0; i < temp.Length; i++)
 			{
 				if (i % 2 == 0) // identificadores de funciones
 				{
 					if (!ActionsID(temp[i]))
 					{
+						id = temp[i];
 						return !ValidAction;
 					}
 				}
@@ -383,9 +450,18 @@ namespace Proyecto_lenguajes
 				{
 					if (!ActionsAsigns(temp[i]))
 					{
+						actions = temp[i];
 						return !ValidAction;
 					}
 				}
+
+				if (Actions != null && Actions.ContainsKey(id))
+				{
+					this.Error = "La funcion ya fue declarada anteriormente";
+					return !ValidAction;
+				}
+
+				Actions.Add(id, new List<string>(actions.Split('\n')));
 			}
 
 			return ValidAction;
@@ -445,7 +521,7 @@ namespace Proyecto_lenguajes
 		internal string ERRORS(string Error)
 		{
 			string[] ErrorArrays = Error.Replace(" ", "").Replace('\t'.ToString(), "").Split('\n');
-
+			int num = 0;
 			foreach (var item in ErrorArrays)
 			{
 				string[] temp = item.Split(Utilities.EqualsSign.ToCharArray());
@@ -458,10 +534,16 @@ namespace Proyecto_lenguajes
 				{
 					return "El error no contiene el sufijo 'ERROR'";
 				}
-				else if (!int.TryParse(temp[1], out _))
+				else if (!int.TryParse(temp[1], out num))
 				{
 					return "Sintaxis de asignacion de ERROR erronea. Se esperaba valor de tipo <int>";
 				}
+
+				if (Errors != null && Errors.ContainsKey(num))
+				{
+					return "El numero de error ya fue asignado anteriormente";
+				}
+				Errors.Add(num, temp[0]);
 			}
 
 			return "";
