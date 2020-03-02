@@ -32,8 +32,9 @@
 			this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.archivoDeEntradaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.File = new System.Windows.Forms.RichTextBox();
 			this.analizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.File = new System.Windows.Forms.RichTextBox();
+			this.Error = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -61,7 +62,7 @@
 			this.abrirToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoDeEntradaToolStripMenuItem});
 			this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
 			this.abrirToolStripMenuItem.Text = "Abrir";
 			// 
 			// archivoDeEntradaToolStripMenuItem
@@ -70,6 +71,13 @@
 			this.archivoDeEntradaToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.archivoDeEntradaToolStripMenuItem.Text = "Archivo de entrada";
 			this.archivoDeEntradaToolStripMenuItem.Click += new System.EventHandler(this.archivoDeEntradaToolStripMenuItem_Click);
+			// 
+			// analizarToolStripMenuItem
+			// 
+			this.analizarToolStripMenuItem.Name = "analizarToolStripMenuItem";
+			this.analizarToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+			this.analizarToolStripMenuItem.Text = "Analizar";
+			this.analizarToolStripMenuItem.Click += new System.EventHandler(this.analizarToolStripMenuItem_Click);
 			// 
 			// File
 			// 
@@ -80,18 +88,20 @@
 			this.File.TabIndex = 1;
 			this.File.Text = "";
 			// 
-			// analizarToolStripMenuItem
+			// Error
 			// 
-			this.analizarToolStripMenuItem.Name = "analizarToolStripMenuItem";
-			this.analizarToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-			this.analizarToolStripMenuItem.Text = "Analizar";
-			this.analizarToolStripMenuItem.Click += new System.EventHandler(this.analizarToolStripMenuItem_Click);
+			this.Error.AutoSize = true;
+			this.Error.Location = new System.Drawing.Point(360, 406);
+			this.Error.Name = "Error";
+			this.Error.Size = new System.Drawing.Size(0, 13);
+			this.Error.TabIndex = 2;
 			// 
 			// Analizador
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.Error);
 			this.Controls.Add(this.File);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
@@ -112,6 +122,7 @@
 		private System.Windows.Forms.ToolStripMenuItem archivoDeEntradaToolStripMenuItem;
 		private System.Windows.Forms.RichTextBox File;
 		private System.Windows.Forms.ToolStripMenuItem analizarToolStripMenuItem;
+		private System.Windows.Forms.Label Error;
 	}
 }
 

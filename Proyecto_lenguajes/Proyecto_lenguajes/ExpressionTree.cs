@@ -70,13 +70,7 @@ namespace Proyecto_lenguajes
 			string set = "";
 			int lstPrcdnc = 0;
 			for (int i = 0; i < RE.Count; i++)
-			{				
-				if (tokens.Count > 0)
-				{
-					lstPrcdnc = this.lastPrecedence;
-					GetLastPrecedence(tokens.Peek());
-				}
-				
+			{								
 				if (RE[i] == "(")
 				{
 					tokens.Push(RE[i].ToString());
@@ -131,29 +125,37 @@ namespace Proyecto_lenguajes
 						trees.Push(temp);
 						GetLastPrecedence(RE[i].ToString());
 					}
-					else if (tokens.Count > 0 && tokens.Peek() != "(" && this.lastPrecedence < lstPrcdnc)
+					else if (tokens.Count > 0 && tokens.Peek() != "(")
 					{
-						ExpressionTree temp = new ExpressionTree();
-						temp.Root = new Node(RE[i].ToString());
+						lstPrcdnc = this.lastPrecedence;
+						GetLastPrecedence(RE[i]);
 
-						if (trees.Count() < 2)
+						if (this.lastPrecedence < lstPrcdnc)
 						{
-							this.Error = "Faltan operandos en la expresion regular asignada a " + id;
-							return;
+							ExpressionTree temp = new ExpressionTree();
+							temp.Root = new Node(tokens.Pop().ToString());
+
+							if (trees.Count() < 2)
+							{
+								this.Error = "Faltan operandos en la expresion regular asignada a " + id;
+								return;
+							}
+
+							ExpressionTree ctree = trees.Pop();
+							temp.Root.Right = ctree.Root;
+
+							ctree = trees.Pop();
+							temp.Root.Left = ctree.Root;
+
+							trees.Push(temp);
 						}
-
-						ExpressionTree ctree = trees.Pop();
-						temp.Root.Right = ctree.Root;
-
-						ctree = trees.Pop();
-						temp.Root.Left = ctree.Root;
-
-						trees.Push(temp);						
 					}
-					else if (RE[i] == "|" || RE[i] == ".")
+					
+					if (RE[i] == "|" || RE[i] == ".")
 					{
 						tokens.Push(RE[i]);
-					}
+						GetLastPrecedence(RE[i]);
+					}					
 				}				
 				else
 				{
@@ -194,13 +196,7 @@ namespace Proyecto_lenguajes
 
 			ExpressionTree result = trees.Pop();
 
-			this.Root = new Node(".")
-			{
-				Right = new Node("#"),
-				Left = result.Root
-			};
+			this.Root = result.Root;
 		}
-
-
 	}
 }

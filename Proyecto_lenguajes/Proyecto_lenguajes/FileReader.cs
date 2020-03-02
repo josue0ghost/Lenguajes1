@@ -335,6 +335,7 @@ namespace Proyecto_lenguajes
 			bool lastWasOP = false;
 			List<string> tlist = new List<string>();
 			string set = "";
+			tlist.Add("(");
 			for (int i = 0; i < RE.Length; i++)
 			{
 				if (RE[i] == Utilities.CharLimiter)
@@ -395,6 +396,10 @@ namespace Proyecto_lenguajes
 					set += RE[i].ToString();
 				}
 			}
+			tlist.Add(")");
+			tlist.Add(".");
+			tlist.Add("#");
+
 
 			ExpressionTree ET = new ExpressionTree();
 			ET.CreateTree(tlist, id);

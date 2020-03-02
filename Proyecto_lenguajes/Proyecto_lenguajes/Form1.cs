@@ -29,7 +29,18 @@ namespace Proyecto_lenguajes
 
 		private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			fr = new FileReader();
 			fr.Analize(File.Text);
+
+			if (fr.Error != "")
+			{
+				Error.Text = fr.Error;
+			}
+			else
+			{
+				Error.Text = "";
+			}
+			
 		}
 	}
 }
