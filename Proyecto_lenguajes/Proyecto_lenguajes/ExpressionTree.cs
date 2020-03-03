@@ -102,6 +102,12 @@ namespace Proyecto_lenguajes
 
 						trees.Push(temp);
 					}
+					if (tokens.Count == 0)
+					{
+						this.Error = "Faltan operandos en la expresion regular asignada a " + id
+							+ ". No se puede cerrar una agrupacion sin antes abrirla";
+						return;
+					}
 					tokens.Pop();
 					GetLastPrecedence(")");
 				}

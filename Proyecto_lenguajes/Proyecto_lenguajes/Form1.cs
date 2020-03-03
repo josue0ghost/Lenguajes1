@@ -33,14 +33,28 @@ namespace Proyecto_lenguajes
 			fr.Analize(File.Text);
 
 			if (fr.Error != "")
-			{
+			{				
 				Error.Text = fr.Error;
+				if (fr.LineIndexError != 0)
+				{
+					Error.Text += ", Linea: " + fr.LineIndexError;
+				}
+				 
 			}
 			else
 			{
-				Error.Text = "";
+				Error.Text = "Error:";
 			}
-			
+
+			if (fr.Warning != "")
+			{
+				Warning.Text = fr.Warning;
+			}
+			else
+			{
+				Warning.Text = "Advertencia:";
+			}
 		}
+
 	}
 }

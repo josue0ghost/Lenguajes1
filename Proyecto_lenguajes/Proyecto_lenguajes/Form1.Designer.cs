@@ -35,6 +35,7 @@
 			this.analizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.File = new System.Windows.Forms.RichTextBox();
 			this.Error = new System.Windows.Forms.Label();
+			this.Warning = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -62,7 +63,7 @@
 			this.abrirToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoDeEntradaToolStripMenuItem});
 			this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.abrirToolStripMenuItem.Text = "Abrir";
 			// 
 			// archivoDeEntradaToolStripMenuItem
@@ -83,24 +84,36 @@
 			// 
 			this.File.Location = new System.Drawing.Point(23, 51);
 			this.File.Name = "File";
-			this.File.ReadOnly = true;
-			this.File.Size = new System.Drawing.Size(306, 369);
+			this.File.Size = new System.Drawing.Size(306, 387);
 			this.File.TabIndex = 1;
 			this.File.Text = "";
 			// 
 			// Error
 			// 
 			this.Error.AutoSize = true;
-			this.Error.Location = new System.Drawing.Point(360, 406);
+			this.Error.ForeColor = System.Drawing.Color.Red;
+			this.Error.Location = new System.Drawing.Point(335, 401);
 			this.Error.Name = "Error";
-			this.Error.Size = new System.Drawing.Size(0, 13);
+			this.Error.Size = new System.Drawing.Size(32, 13);
 			this.Error.TabIndex = 2;
+			this.Error.Text = "Error:";
+			// 
+			// Warning
+			// 
+			this.Warning.AutoSize = true;
+			this.Warning.ForeColor = System.Drawing.Color.Orange;
+			this.Warning.Location = new System.Drawing.Point(335, 422);
+			this.Warning.Name = "Warning";
+			this.Warning.Size = new System.Drawing.Size(67, 13);
+			this.Warning.TabIndex = 3;
+			this.Warning.Text = "Advertencia:";
 			// 
 			// Analizador
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.Warning);
 			this.Controls.Add(this.Error);
 			this.Controls.Add(this.File);
 			this.Controls.Add(this.menuStrip1);
@@ -123,6 +136,7 @@
 		private System.Windows.Forms.RichTextBox File;
 		private System.Windows.Forms.ToolStripMenuItem analizarToolStripMenuItem;
 		private System.Windows.Forms.Label Error;
+		private System.Windows.Forms.Label Warning;
 	}
 }
 
