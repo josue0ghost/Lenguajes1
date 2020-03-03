@@ -320,11 +320,7 @@ namespace Proyecto_lenguajes
 				}
 			}
 
-			if (Sets == null)
-			{
-				Sets.Add(id, value);
-			}
-			else if (!Sets.ContainsKey(id))
+			if (!Sets.ContainsKey(id))
 			{
 				Sets.Add(id, value);
 			}
@@ -618,7 +614,7 @@ namespace Proyecto_lenguajes
 		internal string ACTIONS(string Actions)
 		{
 			string sActions = Actions.Replace('\t'.ToString(), "");
-
+			
 			if (sActions.IndexOf("RESERVADAS()", StringComparison.OrdinalIgnoreCase) < 0)
 			{
 				this.Error = "Se esperaba funcion RESERVADAS() en ACTIONS";
@@ -697,11 +693,11 @@ namespace Proyecto_lenguajes
 						{
 							if (id == "")
 							{
-								this.LineError = temp[i];
+								this.LineError = temp[i]; // si no existe un id
 							}
 							else
 							{
-								this.LineError = temp[i + 1];
+								this.LineError = temp[i + 1]; // si no existe una asignación
 							}
 							this.Error = "Formato de función incorrecto en sección ACTIONS";
 							return !ValidAction;
@@ -735,7 +731,7 @@ namespace Proyecto_lenguajes
 			{
 				return false;
 			}			
-			// firmas			
+			// asignaciones		
 			if (!ActionsAsigns(actions))
 			{
 				return false;
@@ -791,7 +787,7 @@ namespace Proyecto_lenguajes
 
 			foreach (var item in AsignsArray)
 			{
-				string[] temp = item.Split(Utilities.EqualsSign.ToCharArray());
+				string[] temp = item.Split(Utilities.EqualsSign.ToCharArray()); // separa {id, asignación}
 
 				if (temp.Length != 2)
 				{
@@ -821,7 +817,6 @@ namespace Proyecto_lenguajes
 					return !ValidAsign;
 				}
 			}
-
 			return ValidAsign;
 		}
 		#endregion

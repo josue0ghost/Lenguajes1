@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,9 +23,11 @@ namespace Proyecto_lenguajes
 		private void archivoDeEntradaToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog();
-			openFileDialog.ShowDialog();
+			openFileDialog.Filter = "txt files (*.txt)|*.txt";
+			openFileDialog.ShowDialog();			
 			string path = openFileDialog.FileName;
-			File.Text = fr.Read(path);			
+			File.Text = fr.Read(path);
+			txtFileName.Text = openFileDialog.FileName;
 		}
 
 		private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
@@ -56,5 +59,19 @@ namespace Proyecto_lenguajes
 			}
 		}
 
+		private void guardarToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			saveFileDialog.Filter = "txt files (*.txt)|*.txt";			
+
+			if (saveFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				StreamWriter writer = new StreamWriter(saveFileDialog.OpenFile());
+
+				writer.WriteLine(File.Text);
+				writer.Dispose();
+				writer.Close();
+			}
+		}
 	}
 }

@@ -36,6 +36,8 @@
 			this.File = new System.Windows.Forms.RichTextBox();
 			this.Error = new System.Windows.Forms.Label();
 			this.Warning = new System.Windows.Forms.Label();
+			this.txtFileName = new System.Windows.Forms.TextBox();
+			this.guardarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -46,14 +48,15 @@
             this.analizarToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(800, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(588, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
 			// archivoToolStripMenuItem
 			// 
 			this.archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.abrirToolStripMenuItem});
+            this.abrirToolStripMenuItem,
+            this.guardarToolStripMenuItem});
 			this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
 			this.archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
 			this.archivoToolStripMenuItem.Text = "Archivo";
@@ -63,7 +66,7 @@
 			this.abrirToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoDeEntradaToolStripMenuItem});
 			this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
 			this.abrirToolStripMenuItem.Text = "Abrir";
 			// 
 			// archivoDeEntradaToolStripMenuItem
@@ -84,7 +87,7 @@
 			// 
 			this.File.Location = new System.Drawing.Point(23, 51);
 			this.File.Name = "File";
-			this.File.Size = new System.Drawing.Size(306, 387);
+			this.File.Size = new System.Drawing.Size(539, 354);
 			this.File.TabIndex = 1;
 			this.File.Text = "";
 			// 
@@ -92,7 +95,7 @@
 			// 
 			this.Error.AutoSize = true;
 			this.Error.ForeColor = System.Drawing.Color.Red;
-			this.Error.Location = new System.Drawing.Point(335, 401);
+			this.Error.Location = new System.Drawing.Point(20, 408);
 			this.Error.Name = "Error";
 			this.Error.Size = new System.Drawing.Size(32, 13);
 			this.Error.TabIndex = 2;
@@ -102,17 +105,33 @@
 			// 
 			this.Warning.AutoSize = true;
 			this.Warning.ForeColor = System.Drawing.Color.Orange;
-			this.Warning.Location = new System.Drawing.Point(335, 422);
+			this.Warning.Location = new System.Drawing.Point(20, 429);
 			this.Warning.Name = "Warning";
 			this.Warning.Size = new System.Drawing.Size(67, 13);
 			this.Warning.TabIndex = 3;
 			this.Warning.Text = "Advertencia:";
 			// 
+			// txtFileName
+			// 
+			this.txtFileName.Location = new System.Drawing.Point(23, 25);
+			this.txtFileName.Name = "txtFileName";
+			this.txtFileName.ReadOnly = true;
+			this.txtFileName.Size = new System.Drawing.Size(539, 20);
+			this.txtFileName.TabIndex = 4;
+			// 
+			// guardarToolStripMenuItem
+			// 
+			this.guardarToolStripMenuItem.Name = "guardarToolStripMenuItem";
+			this.guardarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.guardarToolStripMenuItem.Text = "Guardar como";
+			this.guardarToolStripMenuItem.Click += new System.EventHandler(this.guardarToolStripMenuItem_Click);
+			// 
 			// Analizador
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.ClientSize = new System.Drawing.Size(588, 450);
+			this.Controls.Add(this.txtFileName);
 			this.Controls.Add(this.Warning);
 			this.Controls.Add(this.Error);
 			this.Controls.Add(this.File);
@@ -137,6 +156,8 @@
 		private System.Windows.Forms.ToolStripMenuItem analizarToolStripMenuItem;
 		private System.Windows.Forms.Label Error;
 		private System.Windows.Forms.Label Warning;
+		private System.Windows.Forms.TextBox txtFileName;
+		private System.Windows.Forms.ToolStripMenuItem guardarToolStripMenuItem;
 	}
 }
 
