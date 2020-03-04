@@ -35,21 +35,6 @@ namespace Proyecto_lenguajes
 			fr = new FileReader();
 			fr.Analize(File.Text);
 
-			if (fr.Error != "")
-			{				
-				Error.Text = fr.Error;
-				if (fr.LineIndexError != 0)
-				{
-					Error.Text += ". Línea: " + fr.LineIndexError;
-				}
-				 
-			}
-			else
-			{
-				Error.Text = "Error:";
-				MessageBox.Show("Formato correcto");
-			}
-
 			if (fr.Warning != "")
 			{
 				Warning.Text = fr.Warning;
@@ -57,6 +42,20 @@ namespace Proyecto_lenguajes
 			else
 			{
 				Warning.Text = "Advertencia:";
+			}
+
+			if (fr.Error != "")
+			{				
+				Error.Text = fr.Error;
+				if (fr.LineIndexError != 0)
+				{
+					Error.Text += ". Línea: " + fr.LineIndexError;
+				}				 
+			}
+			else
+			{
+				Error.Text = "Error:";
+				MessageBox.Show("Formato correcto");
 			}
 		}
 

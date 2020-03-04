@@ -274,7 +274,7 @@ namespace Proyecto_lenguajes
 					{
 						if (expression[i + 1] != Utilities.Range)
 						{
-							this.Error = "Se esperaba: " + Utilities.Range.ToString() + " en operación de tipo rango";
+							this.Error = "Se esperaba: '" + Utilities.Range.ToString() + "' en operación de tipo rango";
 							return !ValidSet;
 						}	
 					}
@@ -413,7 +413,7 @@ namespace Proyecto_lenguajes
 
 			if (Token != null && Tokens.ContainsKey(id))
 			{
-				this.Error = id + " ya fue declarado previamente.";
+				this.Error = id + " ya fue declarado previamente";
 				return !ValidToken;				
 			}			
 			
