@@ -40,7 +40,7 @@ namespace Proyecto_lenguajes
 				Error.Text = fr.Error;
 				if (fr.LineIndexError != 0)
 				{
-					Error.Text += ". Linea: " + fr.LineIndexError;
+					Error.Text += ". Línea: " + fr.LineIndexError;
 				}
 				 
 			}
