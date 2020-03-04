@@ -179,7 +179,7 @@ namespace Proyecto_lenguajes
 
 			if (!Set.Contains(Utilities.EqualsSign.ToString()))
 			{
-				this.Error = "Formato de set incorrecto. Se esperaba asignación.";
+				this.Error = "Formato de set incorrecto. Se esperaba asignación";
 				return !ValidSet;
 			}
 
@@ -197,7 +197,7 @@ namespace Proyecto_lenguajes
 				{
 					if (lastWasST)
 					{
-						this.Error = "Debe existir una sentencia de concatenación o rango entre símbolos.";
+						this.Error = "Debe existir una sentencia de concatenación o rango entre símbolos";
 						return !ValidSet;
 					}
 					try
@@ -223,7 +223,7 @@ namespace Proyecto_lenguajes
 				{
 					if (lastWasST)
 					{
-						this.Error = "Debe existir una sentencia de concatenación o rango entre símbolos.";
+						this.Error = "Debe existir una sentencia de concatenación o rango entre símbolos";
 						return !ValidSet;
 					}
 					try
@@ -247,7 +247,7 @@ namespace Proyecto_lenguajes
 						{							
 							if (!int.TryParse(expression[i].ToString(), out int x))
 							{
-								this.Error = "Se esperaba <int> como parámetro de función CHR.";
+								this.Error = "Se esperaba <int> como parámetro de función CHR";
 								return !ValidSet;
 							}
 							i++;
@@ -267,20 +267,20 @@ namespace Proyecto_lenguajes
 				{
 					if (lastWasRange || lastWasConcat)
 					{
-						this.Error = "No puede existir una sentencia de rango inmediata a una sentencia de rango o concatenación.";
+						this.Error = "No puede existir una sentencia de rango inmediata a una sentencia de rango o concatenación";
 						return !ValidSet;
 					}
 					try
 					{
 						if (expression[i + 1] != Utilities.Range)
 						{
-							this.Error = "Se esperaba: " + Utilities.Range.ToString() + " en operación de tipo rango.";
+							this.Error = "Se esperaba: " + Utilities.Range.ToString() + " en operación de tipo rango";
 							return !ValidSet;
 						}	
 					}
 					catch (Exception)
 					{
-						this.Error = "Formato de set incorrecto.";
+						this.Error = "Formato de set incorrecto";
 						return !ValidSet;
 					}					
 					i += 1;
@@ -315,7 +315,7 @@ namespace Proyecto_lenguajes
 				}
 				else // precede un caracter no esperado
 				{
-					this.Error = "Caracter no esperado en definición de set.";
+					this.Error = "Caracter no esperado en definición de set";
 					return !ValidSet;
 				}
 			}
@@ -326,7 +326,7 @@ namespace Proyecto_lenguajes
 			}
 			else
 			{
-				this.Error = "El set ya fue definido anteriormente.";
+				this.Error = "El set ya fue definido anteriormente";
 				return !ValidSet;
 			}
 
@@ -372,7 +372,7 @@ namespace Proyecto_lenguajes
 			// si el token no tiene una asignación
 			if (!Token.Contains(Utilities.EqualsSign))
 			{
-				this.Error = "Formato de token incorrecto. Se esperaba asignacion.";
+				this.Error = "Formato de token incorrecto. Se esperaba asignacion";
 				return !ValidToken;
 			}			
 
@@ -394,20 +394,20 @@ namespace Proyecto_lenguajes
 					}
 					else
 					{
-						this.Error = "Se esperaba valor de tipo <int> en la definición de token.";
+						this.Error = "Se esperaba valor de tipo <int> en la definición de token";
 						return !ValidToken;
 					}
 					NumWasEvaluated = true;
 				}
 				if (!NumWasEvaluated)
 				{
-					this.Error = "Se esperaba valor de tipo <int> en la definición de token.";
+					this.Error = "Se esperaba valor de tipo <int> en la definición de token";
 					return !ValidToken;
 				}
 			}
 			else
 			{
-				this.Error = "Falta la palabra 'TOKEN' en la definición del identificador token.";
+				this.Error = "Falta la palabra 'TOKEN' en la definición del identificador token";
 				return !ValidToken;
 			}
 
@@ -739,7 +739,7 @@ namespace Proyecto_lenguajes
 
 			if (Actions != null && Actions.ContainsKey(id))
 			{
-				this.Error = "La funcion ya fue declarada anteriormente";
+				this.Error = "La función ya fue declarada anteriormente";
 				return false;
 			}			
 			return true;
@@ -760,7 +760,7 @@ namespace Proyecto_lenguajes
 			if (int.TryParse(charID[0].ToString(), out _))
 			{
 				this.LineError = ID.Replace('\n'.ToString(), "");
-				this.Error = "Se esperaba un identificador. No puede iniciarse un identificador con un caracter numerico";
+				this.Error = "Se esperaba un identificador. No puede iniciarse un identificador con un caracter numérico";
 				return !ValidID;
 			}
 			// terminacion en "()"
@@ -794,7 +794,7 @@ namespace Proyecto_lenguajes
 					if (temp[0].Trim() != "")
 					{
 						this.LineError = item;
-						this.Error = "Formato de asignación incorrecto.";
+						this.Error = "Formato de asignación incorrecto";
 						return !ValidAsign;
 					}					
 				}
