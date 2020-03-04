@@ -407,7 +407,7 @@ namespace Proyecto_lenguajes
 			}
 			else
 			{
-				this.Error = "Falta la palabra 'TOKEN' en la definición del identificador token";
+				this.Error = "Falta la palabra 'TOKEN' en la definición del identificador del token";
 				return !ValidToken;
 			}
 
