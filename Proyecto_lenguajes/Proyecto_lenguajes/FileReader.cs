@@ -581,7 +581,10 @@ namespace Proyecto_lenguajes
 			// en el caso de que haya quedado un Set sin agregar
 			if (set != "")
 			{
-				tlist.Add(".");
+				if (lastWasOP || lastWasClsngB || lastWasST)
+				{
+					tlist.Add(".");
+				}
 				tlist.Add(set);
 			}
 
