@@ -10,7 +10,7 @@ namespace Proyecto_lenguajes
 	class FileReader
 	{
 		public Dictionary<string, string> Sets = new Dictionary<string, string>();
-		public Dictionary<string, ExpressionTree> Tokens = new Dictionary<string, ExpressionTree>();
+		public Dictionary<string, List<string>> Tokens = new Dictionary<string, List<string>>();
 		public Dictionary<string, List<string>> Actions = new Dictionary<string, List<string>>();
 		public Dictionary<int, string> Errors = new Dictionary<int, string>();
 
@@ -533,10 +533,10 @@ namespace Proyecto_lenguajes
 				else if (RE[i] == Utilities.OpeningBrace)
 				{
 					BraceOpened = true; // se inicio un '{'
-					if (lastWasClsngB || lastWasST || lastWasOP)
-					{
-						tlist.Add(".");
-					}
+					//if (lastWasClsngB || lastWasST || lastWasOP)
+					//{
+					//	tlist.Add(".");
+					//}
 					i++;
 					while (RE[i] != Utilities.ClosingBrace && RE.Length > i)
 					{												
@@ -552,7 +552,7 @@ namespace Proyecto_lenguajes
 						this.Error = "Definición de función en " + id + " errónea. Se esperaba '}'";
 						return !ValidToken;
 					}
-					tlist.Add(set);
+					//tlist.Add(set);
 					set = "";
 
 					lastWasST = true;
@@ -590,19 +590,21 @@ namespace Proyecto_lenguajes
 
 			tlist.Add(")");					// Para (<ER>).#
 			tlist.Add(".");					// Para (<ER>).#
-			tlist.Add("#");					// Para (<ER>).#
+			tlist.Add("#");                 // Para (<ER>).#
 
 
-			ExpressionTree ET = new ExpressionTree();
-			ET.CreateTree(tlist, id);
+			//ExpressionTree ET = new ExpressionTree();
+			//ET.CreateTree(tlist, id);
 
-			if (ET.Error != "")
-			{
-				this.Error = ET.Error;
-				return !ValidToken;
-			}
+			//if (ET.Error != "")
+			//{
+			//	this.Error = ET.Error;
+			//	return !ValidToken;
+			//}
 
-			Tokens.Add(id, ET);
+			//Tokens.Add(id, ET);
+
+			Tokens.Add(id, tlist);
 
 			return ValidToken;
 		}
