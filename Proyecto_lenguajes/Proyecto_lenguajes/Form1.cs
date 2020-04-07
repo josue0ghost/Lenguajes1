@@ -24,10 +24,13 @@ namespace Proyecto_lenguajes
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = "txt files (*.txt)|*.txt";
-			openFileDialog.ShowDialog();			
-			string path = openFileDialog.FileName;
-			File.Text = fr.Read(path);
-			txtFileName.Text = openFileDialog.FileName;
+
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				string path = openFileDialog.FileName;
+				File.Text = fr.Read(path);
+				txtFileName.Text = openFileDialog.FileName;
+			}
 		}
 
 		private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
