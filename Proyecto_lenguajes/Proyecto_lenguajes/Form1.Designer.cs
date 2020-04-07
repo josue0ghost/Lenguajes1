@@ -34,11 +34,11 @@
 			this.archivoDeEntradaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.guardarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.analizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.verTablasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.File = new System.Windows.Forms.RichTextBox();
 			this.Error = new System.Windows.Forms.Label();
 			this.Warning = new System.Windows.Forms.Label();
 			this.txtFileName = new System.Windows.Forms.TextBox();
-			this.verTablasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -92,6 +92,13 @@
 			this.analizarToolStripMenuItem.Text = "Analizar";
 			this.analizarToolStripMenuItem.Click += new System.EventHandler(this.analizarToolStripMenuItem_Click);
 			// 
+			// verTablasToolStripMenuItem
+			// 
+			this.verTablasToolStripMenuItem.Name = "verTablasToolStripMenuItem";
+			this.verTablasToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
+			this.verTablasToolStripMenuItem.Text = "Ver tablas";
+			this.verTablasToolStripMenuItem.Click += new System.EventHandler(this.verTablasToolStripMenuItem_Click);
+			// 
 			// File
 			// 
 			this.File.Location = new System.Drawing.Point(23, 51);
@@ -127,12 +134,6 @@
 			this.txtFileName.ReadOnly = true;
 			this.txtFileName.Size = new System.Drawing.Size(539, 20);
 			this.txtFileName.TabIndex = 4;
-			// 
-			// verTablasToolStripMenuItem
-			// 
-			this.verTablasToolStripMenuItem.Name = "verTablasToolStripMenuItem";
-			this.verTablasToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
-			this.verTablasToolStripMenuItem.Text = "Ver tablas";
 			// 
 			// Analizador
 			// 

@@ -41,7 +41,7 @@ namespace Proyecto_lenguajes
 		private Stack<ExpressionTree> trees = new Stack<ExpressionTree>();
 		private int lastPrecedence = int.MaxValue;
 		private int STid = 1;
-		public Dictionary<int, List<int>> Follows = new Dictionary<int, List<int>>();
+		public Dictionary<int, List<int>> Follows = new Dictionary<int, List<int>>();		
 
 		private void GetLastPrecedence(string token)
 		{
@@ -61,8 +61,7 @@ namespace Proyecto_lenguajes
 			{
 				lastPrecedence = 1;
 			}
-		}
-		
+		}		
 
 		public ExpressionTree()
 		{
@@ -76,7 +75,6 @@ namespace Proyecto_lenguajes
 		/// <param name="RE"></param>
 		public void CreateTree(List<string> RE, string id)
 		{
-			string set = "";
 			int lstPrcdnc = 0;
 			for (int i = 0; i < RE.Count; i++)
 			{								
@@ -220,10 +218,11 @@ namespace Proyecto_lenguajes
 		public void ClaculateFirst_Last_n_Follow()
 		{
 			CalculateFirst_n_Last(this.Root);
+			CalculateFollow(this.Root);
 		}
 		
 		/// <summary>
-		/// Calculo de Firs y Last en un recorrido post order
+		/// Calculo de First y Last en un recorrido post order
 		/// </summary>
 		/// <param name="root"></param>
 		private void CalculateFirst_n_Last(Node root)
@@ -281,14 +280,18 @@ namespace Proyecto_lenguajes
 			}
 		}
 
+		/// <summary>
+		/// Calculo de Follows en un recorrido post order
+		/// </summary>
+		/// <param name="root"></param>
 		private void CalculateFollow(Node root)
 		{
 			if (root == null)
 			{
 				return;
 			}
-			CalculateFirst_n_Last(root.Left);
-			CalculateFirst_n_Last(root.Right);
+			CalculateFollow(root.Left);
+			CalculateFollow(root.Right);
 
 			if (!root.Leaf) // nodo es {"*", "?", "+", ".", "|" }
 			{
@@ -303,6 +306,7 @@ namespace Proyecto_lenguajes
 				}
 				else if (root.Item == ".")
 				{
+					// A L(c1) => F(c2)
 					for (int i = 0; i < root.Left.Last.Count; i++)
 					{
 						Follows[root.Left.Last[i]].AddRange(root.Right.First);

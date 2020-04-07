@@ -59,6 +59,9 @@ namespace Proyecto_lenguajes
 			{
 				Error.Text = "Error:";
 				MessageBox.Show("Formato correcto");
+
+				Scanner sc = new Scanner();
+				sc.GenerateExpressionTree(fr);
 			}
 		}
 
@@ -75,6 +78,12 @@ namespace Proyecto_lenguajes
 				writer.Dispose();
 				writer.Close();
 			}
+		}
+
+		private void verTablasToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Tablas tablas = new Tablas();
+			tablas.Show();
 		}
 	}
 }

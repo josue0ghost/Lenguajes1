@@ -9,6 +9,7 @@ namespace Proyecto_lenguajes
 	class Scanner
 	{
 		List<string> GeneralER = new List<string>();
+
 		public void GenerateExpressionTree(FileReader fr)
 		{
 			foreach (var item in fr.Tokens)
@@ -20,9 +21,8 @@ namespace Proyecto_lenguajes
 				}
 			}
 			GeneralER.RemoveAt(GeneralER.Count - 1); // Eliminar el último "|"
-
-			ExpressionTree tree = new ExpressionTree();
-			tree.CreateTree(GeneralER, "");
+			
+			Data.Instance.Tree.CreateTree(GeneralER, "");
 		}
 	}
 }
