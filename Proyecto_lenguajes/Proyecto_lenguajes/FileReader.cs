@@ -593,14 +593,15 @@ namespace Proyecto_lenguajes
 			tlist.Add("#");                 // Para (<ER>).#
 
 
-			//ExpressionTree ET = new ExpressionTree();
-			//ET.CreateTree(tlist, id);
+			// Analizar errores en ER
+			ExpressionTree ET = new ExpressionTree();
+			ET.CreateTree(tlist, id);
 
-			//if (ET.Error != "")
-			//{
-			//	this.Error = ET.Error;
-			//	return !ValidToken;
-			//}
+			if (ET.Error != "")
+			{
+				this.Error = ET.Error;
+				return !ValidToken;
+			}
 
 			//Tokens.Add(id, ET);
 

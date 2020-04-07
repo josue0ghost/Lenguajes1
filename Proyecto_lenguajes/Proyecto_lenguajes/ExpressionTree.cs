@@ -10,7 +10,14 @@ namespace Proyecto_lenguajes
 	{
 		public Node Left { get; set; }
 		public Node Right { get; set; }
-		string item { get; set; }
+		public string Item { get; set; }
+		public int id { get; set; }
+		// funcionalidades
+		public List<int> First = new List<int>();
+		public List<int> Last = new List<int>();		
+		public bool Nullable { get; set; }
+
+
 		public bool Leaf => (this.Left == null && this.Right == null);
 		public bool Full => (this.Left != null && this.Right != null);
 
@@ -20,7 +27,7 @@ namespace Proyecto_lenguajes
 		
 		public Node(string value, Node Left, Node Right)
 		{
-			this.item = value;
+			this.Item = value;
 			this.Left = Left;
 			this.Right = Right;
 		}
@@ -33,6 +40,8 @@ namespace Proyecto_lenguajes
 		private Stack<string> tokens = new Stack<string>();
 		private Stack<ExpressionTree> trees = new Stack<ExpressionTree>();
 		private int lastPrecedence = int.MaxValue;
+		private int STid = 1;
+		public Dictionary<int, List<int>> Follows = new Dictionary<int, List<int>>();
 
 		private void GetLastPrecedence(string token)
 		{
@@ -203,6 +212,103 @@ namespace Proyecto_lenguajes
 			ExpressionTree result = trees.Pop();
 
 			this.Root = result.Root;
+		}
+
+		/// <summary>
+		/// Calculos realizando un recorrido post order
+		/// </summary>
+		public void ClaculateFirst_Last_n_Follow()
+		{
+			CalculateFirst_n_Last(this.Root);
+		}
+		
+		/// <summary>
+		/// Calculo de Firs y Last en un recorrido post order
+		/// </summary>
+		/// <param name="root"></param>
+		private void CalculateFirst_n_Last(Node root)
+		{
+			if (root == null)
+			{
+				return;
+			}
+			CalculateFirst_n_Last(root.Left);
+			CalculateFirst_n_Last(root.Right);
+
+			if (root.Leaf) // nodo hoja es ST
+			{
+				Follows.Add(STid, new List<int>());
+				root.id = STid;
+				STid++;
+
+				root.First.Add(root.id);
+				root.Last.Add(root.id);
+				root.Nullable = false;
+			}
+			else // nodo es {"*", "?", "+", ".", "|" }
+			{
+				string[] Unary = new string[] {"*", "?", "+" };
+				if (Unary.Contains(root.Item))
+				{
+					root.First = root.Left.First;
+					root.Last = root.Left.Last;
+					root.Nullable = (root.Item == "+") ? false : true;
+				}
+				else if (root.Item == "|")
+				{
+					root.First = root.Left.First;
+					root.First.AddRange(root.Right.First);
+					root.Last = root.Left.Last;
+					root.Last.AddRange(root.Right.Last);
+					root.Nullable = (root.Left.Nullable == true || root.Right.Nullable == true);
+				}
+				else // root.Item == "."
+				{
+					root.First = root.Left.First;
+					if (root.Left.Nullable)
+					{
+						root.First.AddRange(root.Right.First);
+					}
+
+					root.Last = root.Right.Last;
+					if (root.Right.Nullable)
+					{
+						root.First.AddRange(root.Left.Last);
+					}
+
+					root.Nullable = (root.Left.Nullable == true && root.Right.Nullable == true);
+				}
+			}
+		}
+
+		private void CalculateFollow(Node root)
+		{
+			if (root == null)
+			{
+				return;
+			}
+			CalculateFirst_n_Last(root.Left);
+			CalculateFirst_n_Last(root.Right);
+
+			if (!root.Leaf) // nodo es {"*", "?", "+", ".", "|" }
+			{
+				string[] Unary = new string[] { "*", "?", "+" };
+				if (Unary.Contains(root.Item))
+				{
+					// A L(c1) => F(c1)
+					for (int i = 0; i < root.Left.Last.Count; i++)
+					{
+						Follows[root.Left.Last[i]].AddRange(root.Left.First);
+					}
+				}
+				else if (root.Item == ".")
+				{
+					for (int i = 0; i < root.Left.Last.Count; i++)
+					{
+						Follows[root.Left.Last[i]].AddRange(root.Right.First);
+					}
+				}				
+			}
 		}
 	}
 }
