@@ -11,7 +11,7 @@ namespace Proyecto_lenguajes
 		public Node Left { get; set; }
 		public Node Right { get; set; }
 		public string Item { get; set; }
-		public int id { get; set; }
+		public int Id { get; set; }
 		// funcionalidades
 		public List<int> First = new List<int>();
 		public List<int> Last = new List<int>();		
@@ -31,8 +31,22 @@ namespace Proyecto_lenguajes
 			this.Left = Left;
 			this.Right = Right;
 		}
-
 	}
+
+	class State
+	{
+		// estados [Key]
+		public List<int> states = new List<int>();
+		// transiciones [Value]
+		public List<int>[] transitions;
+
+		public State(int NoSymbols, List<int> state)
+		{
+			states = state;
+			transitions = new List<int>[NoSymbols];
+		}
+	}
+
 	class ExpressionTree
 	{
 		public Node Root { get; set; }
@@ -41,7 +55,11 @@ namespace Proyecto_lenguajes
 		private Stack<ExpressionTree> trees = new Stack<ExpressionTree>();
 		private int lastPrecedence = int.MaxValue;
 		private int STid = 1;
-		public Dictionary<int, List<int>> Follows = new Dictionary<int, List<int>>();		
+		public Dictionary<int, List<int>> Follows = new Dictionary<int, List<int>>();
+		public Dictionary<List<int>, List<int>[]> tabla = new Dictionary<List<int>, List<int>[]>();
+		public List<string> symbols = new List<string>();
+		private List<Node> Leafs = new List<Node>();
+		public List<State> states = new List<State>();
 
 		private void GetLastPrecedence(string token)
 		{
@@ -237,11 +255,11 @@ namespace Proyecto_lenguajes
 			if (root.Leaf) // nodo hoja es ST
 			{
 				Follows.Add(STid, new List<int>());
-				root.id = STid;
+				root.Id = STid;
 				STid++;
 
-				root.First.Add(root.id);
-				root.Last.Add(root.id);
+				root.First.Add(root.Id);
+				root.Last.Add(root.Id);
 				root.Nullable = false;
 			}
 			else // nodo es {"*", "?", "+", ".", "|" }
@@ -302,6 +320,7 @@ namespace Proyecto_lenguajes
 					for (int i = 0; i < root.Left.Last.Count; i++)
 					{
 						Follows[root.Left.Last[i]].AddRange(root.Left.First);
+						Follows[root.Left.Last[i]].Sort();
 					}
 				}
 				else if (root.Item == ".")
@@ -310,8 +329,81 @@ namespace Proyecto_lenguajes
 					for (int i = 0; i < root.Left.Last.Count; i++)
 					{
 						Follows[root.Left.Last[i]].AddRange(root.Right.First);
+						Follows[root.Left.Last[i]].Sort();
 					}
 				}				
+			}
+		}
+
+		private void SortAll(Node root)
+		{
+			if (root == null)
+			{
+				return;
+			}
+
+			SortAll(root.Left);
+			SortAll(root.Right);
+
+			root.First.Sort();
+			root.Last.Sort();
+		}
+
+		private void GetSymbols(Node root)
+		{
+			if (root == null)
+			{
+				return;
+			}
+			if (!root.Leaf)
+			{
+				return;
+			}
+
+			GetSymbols(root.Left);
+			GetSymbols(root.Right);
+
+			Leafs.Add(root);
+			if (!symbols.Contains(root.Item))
+			{
+				symbols.Add(root.Item);
+			}
+		}
+
+		private void CalculateTransitionsTable(Node root)
+		{
+			SortAll(root);
+			GetSymbols(root);			
+			
+			// El estado inicial es el First de la raíz						
+			states.Add(new State(symbols.Count, root.First));
+			GetTransitions(states[0]);
+
+		}
+		
+		private void GetTransitions(State st)
+		{
+			for (int i = 0; i < symbols.Count; i++)
+			{
+				for (int j = 0; j < st.states.Count; j++)
+				{
+					// busca las coincidencias de la transicion con los symbolos
+					// según los estados
+					if (Leafs[st.states[j]].Item == symbols[i])
+					{
+						// si hay coincidencias se agregan los follows a esa transicion
+						st.transitions[i].AddRange(Follows[st.states[j]]);
+					}
+				}
+			}
+
+			for (int i = 0; i < st.transitions.Length; i++)
+			{
+				if (st.states != st.transitions[i])
+				{
+					states.Add(new State(symbols.Count, st.transitions[i]));
+					GetTransitions(states[states.Count - 1]);
+				}
 			}
 		}
 	}
