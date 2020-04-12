@@ -13,7 +13,7 @@ namespace Proyecto_lenguajes
 {
 	public partial class Analizador : Form
 	{
-		FileReader fr = new FileReader();
+		bool Analized = false;
 
 		public Analizador()
 		{
@@ -28,40 +28,38 @@ namespace Proyecto_lenguajes
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
 			{
 				string path = openFileDialog.FileName;
-				File.Text = fr.Read(path);
+				File.Text = Data.Instance.fr.Read(path);
 				txtFileName.Text = openFileDialog.FileName;
 			}
 		}
 
 		private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			fr = new FileReader();
-			fr.Analize(File.Text);
+			Data.Instance.fr = new FileReader();
+			Data.Instance.fr.Analize(File.Text);
 
-			if (fr.Warning != "")
+			if (Data.Instance.fr.Warning != "")
 			{
-				Warning.Text = fr.Warning;
+				Warning.Text = Data.Instance.fr.Warning;
 			}
 			else
 			{
 				Warning.Text = "Advertencia:";
 			}
 
-			if (fr.Error != "")
+			if (Data.Instance.fr.Error != "")
 			{				
-				Error.Text = fr.Error;
-				if (fr.LineIndexError != 0)
+				Error.Text = Data.Instance.fr.Error;
+				if (Data.Instance.fr.LineIndexError != 0)
 				{
-					Error.Text += ". Línea: " + fr.LineIndexError;
+					Error.Text += ". Línea: " + Data.Instance.fr.LineIndexError;
 				}				 
 			}
 			else
 			{
 				Error.Text = "Error:";
 				MessageBox.Show("Formato correcto");
-
-				Scanner sc = new Scanner();
-				sc.GenerateExpressionTree(fr);
+				Analized = true;
 			}
 		}
 
@@ -82,8 +80,15 @@ namespace Proyecto_lenguajes
 
 		private void verTablasToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Tablas tablas = new Tablas();
-			tablas.Show();
+			if (!Analized)
+			{
+				MessageBox.Show("No se podrán generar tablas hasta el análisis correcto del archivo");
+			}
+			else
+			{
+				Tablas tablas = new Tablas();
+				tablas.Show();
+			}
 		}
 	}
 }

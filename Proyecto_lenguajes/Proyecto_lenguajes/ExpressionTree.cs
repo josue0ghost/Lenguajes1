@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -272,7 +273,7 @@ namespace Proyecto_lenguajes
 				{
 					root.First = root.Left.First;
 					root.Last = root.Left.Last;
-					root.Nullable = (root.Item == "+") ? false : true;
+					root.Nullable = (root.Item == "+") ? (root.Left.Nullable) : true;
 				}
 				else if (root.Item == "|")
 				{
@@ -390,19 +391,36 @@ namespace Proyecto_lenguajes
 			{
 				SortAll(root);
 				GetSymbols(root);
+				// El ultimo elemento es "#" ya que no sirve para el análisis de transiciones, se elimina
+				symbols.RemoveAt(symbols.Count - 1);
 
-				// El estado inicial es el First de la raíz						
+				// El estado inicial es el First de la raíz
 				states.Add(new State(symbols.Count, root.First));
 				AuxS.Add(new List<int>(root.First));
 				GetTransitions(states[0]);
+
+				while (!NoMoreStates)
+				{
+					for (int i = 0; i < AuxS.Count; i++)
+					{
+						if (!states[i].Setted)
+						{
+							GetTransitions(states[i]);
+						}
+					}
+				}
+
 				return true;
 			}			
 		}
-		
+
+		bool NoMoreStates = true;
 		private void GetTransitions(State st)
 		{
+			NoMoreStates = true;
 			for (int i = 0; i < symbols.Count; i++)
 			{
+				st.transitions[i] = new List<int>();
 				for (int j = 0; j < st.states.Count; j++)
 				{
 					// busca las coincidencias de la transicion con los symbolos
@@ -410,25 +428,35 @@ namespace Proyecto_lenguajes
 					if (Leafs[st.states[j] - 1].Item == symbols[i])
 					{
 						// si hay coincidencias se agregan los follows a esa transicion
-						st.transitions[i] = new List<int>();
-						st.transitions[i].AddRange(Follows[st.states[j]]);
+						st.transitions[i].AddRange(Follows[st.states[j]].Except(st.transitions[i]));
 					}
 				}
 			}
 			st.Setted = true;
 
-			for (int i = 0; i < states.Count; i++)
+
+			for (int i = 0; i < st.transitions.Length; i++)
 			{
-				for (int j = 0; j < st.transitions.Length; j++)
+				// si la transición no está en el conjunto de estados		
+				if (Contains(AuxS, st.transitions[i]) == false)
 				{
-					// si la transición no está en el conjunto de estados
-					if (!AuxS.Contains(st.transitions[j]))
-					{
-						states.Add(new State(symbols.Count, st.transitions[i]));
-						AuxS.Add(st.transitions[i]);
-					}
+					states.Add(new State(symbols.Count, st.transitions[i]));
+					AuxS.Add(st.transitions[i]);
+					NoMoreStates = false;
 				}
 			}
+		}
+
+		private bool Contains(List<List<int>> a, List<int> b)
+		{
+			for (int i = 0; i < a.Count; i++)
+			{
+				if (b.All(x => a[i].Contains(x)) && b.Count == a[i].Count) // equals
+				{
+					return true;
+				}				
+			}
+			return false;
 		}
 	}
 }

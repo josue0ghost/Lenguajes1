@@ -19,5 +19,6 @@ namespace Proyecto_lenguajes
 		}
 
 		public ExpressionTree Tree = new ExpressionTree();
+		public FileReader fr = new FileReader();
 	}
 }

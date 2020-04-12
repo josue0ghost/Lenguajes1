@@ -24,6 +24,9 @@ namespace Proyecto_lenguajes
 
 		private void GetFunctions()
 		{
+			Scanner sc = new Scanner();
+			sc.GenerateExpressionTree(Data.Instance.fr);
+
 			Data.Instance.Tree.ClaculateFirst_Last_n_Follow();
 			FLN(Data.Instance.Tree.Root);
 			Follows();
@@ -69,8 +72,9 @@ namespace Proyecto_lenguajes
 				StatesGrid.Columns.Add("Col" + j.ToString(), Data.Instance.Tree.symbols[j]);
 			}
 
+
 			for (int i = 0; i < Data.Instance.Tree.states.Count; i++)
-			{				
+			{			
 				int n = StatesGrid.Rows.Add();
 				StatesGrid.Rows[n].Cells[0].Value = ListToString(Data.Instance.Tree.states[i].states);
 

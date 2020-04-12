@@ -26,6 +26,7 @@ namespace Proyecto_lenguajes
 			GeneralER.Add(".");
 			GeneralER.Add("#");
 
+			Data.Instance.Tree = new ExpressionTree();
 			Data.Instance.Tree.CreateTree(GeneralER, "");			
 		}
 	}

@@ -426,7 +426,7 @@ namespace Proyecto_lenguajes
 
 			List<string> tlist = new List<string>();
 			string set = "";							// la variable set se utiliza para los st que deberían estar definidos en los Sets
-			tlist.Add("(");								// Para (<ER>).#
+			//tlist.Add("(");								// Para (<ER>).#
 			for (int i = 0; i < RE.Length; i++)
 			{
 				// maneja tokens de tipo '<char>'
@@ -505,6 +505,10 @@ namespace Proyecto_lenguajes
 				{
 					if (set != "")
 					{
+						if (lastWasST || lastWasClsngB || lastWasOP)
+						{
+							tlist.Add(".");
+						}
 						tlist.Add(set);
 						set = "";
 					}											
@@ -559,7 +563,7 @@ namespace Proyecto_lenguajes
 					//tlist.Add(set);
 					set = "";
 
-					lastWasST = true;
+					lastWasST = false;
 					lastWasOP = false;
 					lastWasClsngB = false;
 				}
@@ -578,7 +582,13 @@ namespace Proyecto_lenguajes
 				}
 				else
 				{
-					set += RE[i].ToString();
+					if (lastWasOP || lastWasClsngB)
+					{
+						tlist.Add(".");
+						lastWasClsngB = false;
+						lastWasOP = false;
+					}
+					set += RE[i].ToString();					
 				}
 			}
 
@@ -592,7 +602,7 @@ namespace Proyecto_lenguajes
 				tlist.Add(set);
 			}
 
-			tlist.Add(")");					// Para (<ER>).#
+			//tlist.Add(")");					// Para (<ER>).#
 			//tlist.Add(".");					// Para (<ER>).#
 			//tlist.Add("#");                 // Para (<ER>).#
 
