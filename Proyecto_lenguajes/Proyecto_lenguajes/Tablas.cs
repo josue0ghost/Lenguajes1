@@ -57,7 +57,7 @@ namespace Proyecto_lenguajes
 			{
 				int n = FollowGrid.Rows.Add();
 
-				FollowGrid.Rows[n].Cells[0].Value = n.ToString();
+				FollowGrid.Rows[n].Cells[0].Value = (n+1).ToString();
 				FollowGrid.Rows[n].Cells[1].Value = ListToString(Data.Instance.Tree.Follows[n + 1]);
 			}
 		}

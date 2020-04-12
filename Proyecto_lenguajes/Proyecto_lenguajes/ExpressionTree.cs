@@ -276,21 +276,30 @@ namespace Proyecto_lenguajes
 				}
 				else if (root.Item == "|")
 				{
-					root.First = root.Left.First;
+					List<int> aux = new List<int>(root.Left.First);
+
+					root.First = aux;
 					root.First.AddRange(root.Right.First);
-					root.Last = root.Left.Last;
+
+					aux = new List<int>(root.Left.Last);
+
+					root.Last = aux;
 					root.Last.AddRange(root.Right.Last);
+
 					root.Nullable = (root.Left.Nullable == true || root.Right.Nullable == true);
 				}
 				else // root.Item == "."
 				{
-					root.First = root.Left.First;
+					List<int> aux = new List<int>(root.Left.First);
+
+					root.First = aux;
 					if (root.Left.Nullable)
 					{
 						root.First.AddRange(root.Right.First);
 					}
 
-					root.Last = root.Right.Last;
+					aux = new List<int>(root.Right.Last);
+					root.Last = aux;
 					if (root.Right.Nullable)
 					{
 						root.Last.AddRange(root.Left.Last);
