@@ -478,7 +478,11 @@ namespace Proyecto_lenguajes
 
 					if (RE[i] == '(')
 					{
-						tlist.Add(".");
+						if (lastWasST)
+						{
+							tlist.Add(".");
+						}
+						
 						lastWasClsngB = false;
 						//lastWasOpngB = true;
 					}
@@ -589,8 +593,8 @@ namespace Proyecto_lenguajes
 			}
 
 			tlist.Add(")");					// Para (<ER>).#
-			tlist.Add(".");					// Para (<ER>).#
-			tlist.Add("#");                 // Para (<ER>).#
+			//tlist.Add(".");					// Para (<ER>).#
+			//tlist.Add("#");                 // Para (<ER>).#
 
 
 			// Analizar errores en ER

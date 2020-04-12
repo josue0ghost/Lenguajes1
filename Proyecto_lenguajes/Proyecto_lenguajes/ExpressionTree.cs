@@ -39,6 +39,8 @@ namespace Proyecto_lenguajes
 		public List<int> states = new List<int>();
 		// transiciones [Value]
 		public List<int>[] transitions;
+		// para evitar StackOverflow
+		public bool Setted;
 
 		public State(int NoSymbols, List<int> state)
 		{
@@ -60,6 +62,7 @@ namespace Proyecto_lenguajes
 		public List<string> symbols = new List<string>();
 		private List<Node> Leafs = new List<Node>();
 		public List<State> states = new List<State>();
+		private List<List<int>> AuxS = new List<List<int>>();
 
 		private void GetLastPrecedence(string token)
 		{
@@ -127,12 +130,12 @@ namespace Proyecto_lenguajes
 
 						trees.Push(temp);
 					}
-					if (tokens.Count == 0)
-					{
-						this.Error = "Faltan operandos en la expresion regular asignada a " + id
-							+ ". No se puede cerrar una agrupacion sin antes abrirla";
-						return;
-					}
+					//if (tokens.Count == 0)
+					//{
+					//	this.Error = "Faltan operandos en la expresion regular asignada a " + id
+					//		+ ". No se puede cerrar una agrupacion sin antes abrirla";
+					//	return;
+					//}
 					tokens.Pop();
 					GetLastPrecedence(")");
 				}
@@ -159,9 +162,9 @@ namespace Proyecto_lenguajes
 					else if (tokens.Count > 0 && tokens.Peek() != "(")
 					{
 						lstPrcdnc = this.lastPrecedence;
-						GetLastPrecedence(RE[i]);
+						GetLastPrecedence(RE[i]); // modifies this.lastPrecedence
 
-						if (this.lastPrecedence < lstPrcdnc)
+						if (this.lastPrecedence <= lstPrcdnc)
 						{
 							ExpressionTree temp = new ExpressionTree();
 							temp.Root = new Node(tokens.Pop().ToString());
@@ -290,7 +293,7 @@ namespace Proyecto_lenguajes
 					root.Last = root.Right.Last;
 					if (root.Right.Nullable)
 					{
-						root.First.AddRange(root.Left.Last);
+						root.Last.AddRange(root.Left.Last);
 					}
 
 					root.Nullable = (root.Left.Nullable == true && root.Right.Nullable == true);
@@ -313,13 +316,13 @@ namespace Proyecto_lenguajes
 
 			if (!root.Leaf) // nodo es {"*", "?", "+", ".", "|" }
 			{
-				string[] Unary = new string[] { "*", "?", "+" };
+				string[] Unary = new string[] { "*", "+" }; // "?" no tiene follow
 				if (Unary.Contains(root.Item))
 				{
 					// A L(c1) => F(c1)
 					for (int i = 0; i < root.Left.Last.Count; i++)
 					{
-						Follows[root.Left.Last[i]].AddRange(root.Left.First);
+						Follows[root.Left.Last[i]].AddRange(root.Left.First.Except(Follows[root.Left.Last[i]]));
 						Follows[root.Left.Last[i]].Sort();
 					}
 				}
@@ -328,7 +331,7 @@ namespace Proyecto_lenguajes
 					// A L(c1) => F(c2)
 					for (int i = 0; i < root.Left.Last.Count; i++)
 					{
-						Follows[root.Left.Last[i]].AddRange(root.Right.First);
+						Follows[root.Left.Last[i]].AddRange(root.Right.First.Except(Follows[root.Left.Last[i]]));
 						Follows[root.Left.Last[i]].Sort();
 					}
 				}				
@@ -355,30 +358,36 @@ namespace Proyecto_lenguajes
 			{
 				return;
 			}
-			if (!root.Leaf)
+			if (root.Leaf)
 			{
-				return;
+				Leafs.Add(root);
+				if (!symbols.Contains(root.Item))
+				{
+					symbols.Add(root.Item);
+				}
 			}
 
 			GetSymbols(root.Left);
-			GetSymbols(root.Right);
-
-			Leafs.Add(root);
-			if (!symbols.Contains(root.Item))
-			{
-				symbols.Add(root.Item);
-			}
+			GetSymbols(root.Right);			
 		}
 
-		private void CalculateTransitionsTable(Node root)
+		public bool CalculateTransitionsTable(Node root)
 		{
-			SortAll(root);
-			GetSymbols(root);			
-			
-			// El estado inicial es el First de la raíz						
-			states.Add(new State(symbols.Count, root.First));
-			GetTransitions(states[0]);
+			if (root == null)
+			{
+				return false;
+			}
+			else
+			{
+				SortAll(root);
+				GetSymbols(root);
 
+				// El estado inicial es el First de la raíz						
+				states.Add(new State(symbols.Count, root.First));
+				AuxS.Add(new List<int>(root.First));
+				GetTransitions(states[0]);
+				return true;
+			}			
 		}
 		
 		private void GetTransitions(State st)
@@ -389,20 +398,26 @@ namespace Proyecto_lenguajes
 				{
 					// busca las coincidencias de la transicion con los symbolos
 					// según los estados
-					if (Leafs[st.states[j]].Item == symbols[i])
+					if (Leafs[st.states[j] - 1].Item == symbols[i])
 					{
 						// si hay coincidencias se agregan los follows a esa transicion
+						st.transitions[i] = new List<int>();
 						st.transitions[i].AddRange(Follows[st.states[j]]);
 					}
 				}
 			}
+			st.Setted = true;
 
-			for (int i = 0; i < st.transitions.Length; i++)
+			for (int i = 0; i < states.Count; i++)
 			{
-				if (st.states != st.transitions[i])
+				for (int j = 0; j < st.transitions.Length; j++)
 				{
-					states.Add(new State(symbols.Count, st.transitions[i]));
-					GetTransitions(states[states.Count - 1]);
+					// si la transición no está en el conjunto de estados
+					if (!AuxS.Contains(st.transitions[j]))
+					{
+						states.Add(new State(symbols.Count, st.transitions[i]));
+						AuxS.Add(st.transitions[i]);
+					}
 				}
 			}
 		}
