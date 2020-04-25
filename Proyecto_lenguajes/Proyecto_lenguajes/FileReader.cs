@@ -184,7 +184,9 @@ namespace Proyecto_lenguajes
 			}
 
 			string id = Set.Substring(0, Set.IndexOf(Utilities.EqualsSign)).Replace(" ", "").Replace('\t'.ToString(), "");
-			string value = Set.Substring(Set.IndexOf(Utilities.EqualsSign) + 1).Trim().Replace('\t'.ToString(), "");
+			// Se estipuló que no pueden declararse los caracteres ' ' y '\t' en los sets
+			string value = Set.Substring(Set.IndexOf(Utilities.EqualsSign) + 1).Trim().Replace('\t'.ToString(), "").Replace(" ", "");
+
 			char[] expression = value.ToCharArray();
 
 			bool lastWasRange = false;
@@ -438,6 +440,9 @@ namespace Proyecto_lenguajes
 						{
 							if (set != "")
 							{
+								IsSetDeclared(set, id);
+								if (this.Error != "")	return !ValidToken;
+								
 								tlist.Add(".");
 								tlist.Add(set);
 								set = "";
@@ -458,8 +463,7 @@ namespace Proyecto_lenguajes
 						{
 							this.Error = "Se esperaba expresión de tipo '<char>' en " + id;
 							return !ValidToken;
-						}
-						
+						}						
 					}
 					catch (Exception)
 					{
@@ -469,32 +473,29 @@ namespace Proyecto_lenguajes
 				}
 				else if (RE[i] == '(' || RE[i] == ')' || RE[i] == '|')
 				{
-
 					if (set != "")
 					{
+						IsSetDeclared(set, id);
+						if (this.Error != "") return !ValidToken;
+
 						tlist.Add(set);
 						set = "";
 					}
 
-					if (RE[i] == '(')
+					switch (RE[i])
 					{
-						if (lastWasST)
-						{
-							tlist.Add(".");
-						}
-						
-						lastWasClsngB = false;
-						//lastWasOpngB = true;
-					}
-					if (RE[i] == ')')
-					{
-						lastWasClsngB = true;
-						//lastWasOpngB = false;
-					}
-					if (RE[i] == '|')
-					{
-						lastWasClsngB = false;
-						//lastWasOpngB = false;
+						case '(':
+							if (lastWasST) tlist.Add(".");
+							lastWasClsngB = false;
+							break;
+
+						case ')':
+							lastWasClsngB = true;
+							break;
+
+						case '|':
+							lastWasClsngB = false;
+							break;
 					}
 
 					tlist.Add(RE[i].ToString());
@@ -505,23 +506,28 @@ namespace Proyecto_lenguajes
 				{
 					if (set != "")
 					{
+						IsSetDeclared(set, id);
+						if (this.Error != "") return !ValidToken;
+
 						if (lastWasST || lastWasClsngB || lastWasOP)
 						{
 							tlist.Add(".");
 						}
 						tlist.Add(set);
 						set = "";
-					}											
+					}
 					tlist.Add(RE[i].ToString());
 					lastWasOP = true;
 					lastWasST = false;
 					lastWasClsngB = false;
-					//lastWasOpngB = false;
 				}
 				else if (RE[i] == ' ' || RE[i] == '\t')
 				{
 					if (set != "")
 					{
+						IsSetDeclared(set, id);
+						if (this.Error != "") return !ValidToken;
+
 						if (lastWasST || lastWasOP || lastWasClsngB)
 						{
 							tlist.Add(".");
@@ -531,10 +537,7 @@ namespace Proyecto_lenguajes
 						lastWasOP = false;
 						lastWasClsngB = false;
 					}
-					//if (lastWasOpngB)
-					//{
-					//	lastWasST = false;						
-					//}				
+		
 					set = "";
 				}
 				// RE[i] == '{'
@@ -560,7 +563,7 @@ namespace Proyecto_lenguajes
 						this.Error = "Definición de función en " + id + " errónea. Se esperaba '}'";
 						return !ValidToken;
 					}
-					//tlist.Add(set);
+					// set := funcion
 					set = "";
 
 					lastWasST = false;
@@ -595,17 +598,15 @@ namespace Proyecto_lenguajes
 			// en el caso de que haya quedado un Set sin agregar
 			if (set != "")
 			{
+				IsSetDeclared(set, id);
+				if (this.Error != "") return !ValidToken;
+
 				if (lastWasOP || lastWasClsngB || lastWasST)
 				{
 					tlist.Add(".");
 				}
 				tlist.Add(set);
 			}
-
-			//tlist.Add(")");					// Para (<ER>).#
-			//tlist.Add(".");					// Para (<ER>).#
-			//tlist.Add("#");                 // Para (<ER>).#
-
 
 			// Analizar errores en ER
 			ExpressionTree ET = new ExpressionTree();
@@ -617,11 +618,14 @@ namespace Proyecto_lenguajes
 				return !ValidToken;
 			}
 
-			//Tokens.Add(id, ET);
-
 			Tokens.Add(id, tlist);
 
 			return ValidToken;
+		}
+
+		internal void IsSetDeclared(string set, string id)
+		{			
+			this.Error = (Sets.ContainsKey(set)) ? "" : this.Error = set + " no está declarado en la sección SETS. En " + id;
 		}
 		#endregion
 
