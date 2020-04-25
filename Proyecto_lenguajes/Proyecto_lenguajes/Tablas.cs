@@ -19,7 +19,14 @@ namespace Proyecto_lenguajes
 
 		private void Tablas_Load(object sender, EventArgs e)
 		{
-			GetFunctions();
+			if (Data.Instance.fr.Tokens.Count() > 0)
+			{
+				GetFunctions();
+			}
+			else
+			{
+				MessageBox.Show("No se pueden generar tablas de un archivo con formato incorrecto");
+			}
 		}
 
 		private void GetFunctions()
