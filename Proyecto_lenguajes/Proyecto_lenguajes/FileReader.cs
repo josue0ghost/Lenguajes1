@@ -9,7 +9,7 @@ namespace Proyecto_lenguajes
 {
 	class FileReader
 	{
-		public Dictionary<string, string> Sets = new Dictionary<string, string>();
+		public Dictionary<string, List<byte>> Sets = new Dictionary<string, List<byte>>();
 		public Dictionary<string, List<string>> Tokens = new Dictionary<string, List<string>>();
 		public Dictionary<string, List<string>> Actions = new Dictionary<string, List<string>>();
 		public Dictionary<int, string> Errors = new Dictionary<int, string>();
@@ -21,6 +21,7 @@ namespace Proyecto_lenguajes
 		public string LineError = "";
 		public int LineIndexError = 0;
 
+		#region General
 		public string Read(string path)
 		{
 			string freaded = "";
@@ -139,6 +140,7 @@ namespace Proyecto_lenguajes
 				Sets = FileContent.Substring(FileContent.IndexOf("SETS") + 4, (FileContent.IndexOf("TOKENS") - FileContent.IndexOf("SETS")) - 4);
 			}
 		}
+		#endregion
 
 		#region SETS
 		/// <summary>
@@ -192,6 +194,11 @@ namespace Proyecto_lenguajes
 			bool lastWasRange = false;
 			bool lastWasST = false;
 			bool lastWasConcat = false;
+
+			// lista de bytes asociadas a un Set
+			List<byte> Bytes = new List<byte>();
+			bool Range = false;
+			byte infByte = 0, supByte = 0;
 			for (int i = 0; i < expression.Length; i++)
 			{
 				// expresiones '<char>'
@@ -208,6 +215,21 @@ namespace Proyecto_lenguajes
 						{
 							this.Error = "No se puede convertir explícitamente <string> en <char>";
 							return !ValidSet;
+						}
+
+						byte[] aux = Encoding.ASCII.GetBytes(expression[i + 1].ToString());
+						if (infByte == 0)
+						{							
+							infByte = aux[0];
+						}
+						else
+						{
+							supByte = aux[0];
+
+							AddToList(Bytes, infByte, supByte);
+
+							infByte = 0;
+							supByte = 0;
 						}
 					}
 					catch (Exception)
@@ -245,14 +267,31 @@ namespace Proyecto_lenguajes
 						i += 4;
 
 						// verificar el formato para enteros "(<int>)"
+						string num = "";
 						while (expression[i] != Utilities.ClosingBracket)
 						{							
 							if (!int.TryParse(expression[i].ToString(), out int x))
-							{
+							{								
 								this.Error = "Se esperaba <int> como parámetro de función CHR";
 								return !ValidSet;
 							}
+							num += expression[i];
 							i++;
+						}
+
+						byte[] aux = new byte[] { (byte)int.Parse(num) };
+						if (infByte == 0)
+						{
+							infByte = aux[0];
+						}
+						else
+						{
+							supByte = aux[0];
+
+							AddToList(Bytes, infByte, supByte);
+							
+							infByte = 0;
+							supByte = 0;
 						}
 					}
 					catch (Exception)
@@ -272,13 +311,19 @@ namespace Proyecto_lenguajes
 						this.Error = "No puede existir una sentencia de rango inmediata a una sentencia de rango o concatenación";
 						return !ValidSet;
 					}
+					if (Range)
+					{
+						this.Error = "No puede existir una sentencia de rango inmediata a otra sentencia de rango";
+						return !ValidSet;
+					}
 					try
 					{
 						if (expression[i + 1] != Utilities.Range)
 						{
 							this.Error = "Se esperaba: '" + Utilities.Range.ToString() + "' en operación de tipo rango";
 							return !ValidSet;
-						}	
+						}
+						Range = true;
 					}
 					catch (Exception)
 					{
@@ -305,6 +350,13 @@ namespace Proyecto_lenguajes
 							this.Error = "Concatenación incorrecta. Se esperaba expresión de tipo '<char>' o CHR(<int>)";
 							return !ValidSet;
 						}
+						// '<char>'+....
+						if (Range == false)
+						{
+							Bytes.Add(infByte);
+							infByte = 0;
+						}
+						Range = false;
 					}
 					catch (Exception)
 					{
@@ -322,9 +374,15 @@ namespace Proyecto_lenguajes
 				}
 			}
 
+			// .....+'<char>'
+			if (infByte != 0)
+			{
+				Bytes.Add(infByte);
+			}
+
 			if (!Sets.ContainsKey(id))
 			{
-				Sets.Add(id, value);
+				Sets.Add(id, Bytes);
 			}
 			else
 			{
@@ -333,6 +391,14 @@ namespace Proyecto_lenguajes
 			}
 
 			return ValidSet;
+		}
+
+		internal void AddToList(List<byte> list, byte a, byte b)
+		{
+			for (int i = a; i <= b; i++)
+			{
+				list.Add((byte)i);
+			}
 		}
 
 		#endregion
