@@ -74,22 +74,24 @@ namespace Proyecto_lenguajes
 
 		private void Transitions()
 		{
-			for (int j = 0; j < Data.Instance.Tree.states[0].transitions.Length; j++)
+			for (int j = 0; j < Data.Instance.Tree.symbols.Count; j++)
 			{
 				StatesGrid.Columns.Add("Col" + j.ToString(), Data.Instance.Tree.symbols[j]);
 			}
 
 
 			for (int i = 0; i < Data.Instance.Tree.states.Count; i++)
-			{			
-				int n = StatesGrid.Rows.Add();
-				StatesGrid.Rows[n].Cells[0].Value = ListToString(Data.Instance.Tree.states[i].states);
-
-				for (int j = 0; j < Data.Instance.Tree.states[i].transitions.Length; j++)
+			{
+				if (Data.Instance.Tree.states[i].states.Count != 0)
 				{
-					StatesGrid.Rows[n].Cells[j + 1].Value = ListToString(Data.Instance.Tree.states[i].transitions[j]);
+					int n = StatesGrid.Rows.Add();
+					StatesGrid.Rows[n].Cells[0].Value = ListToString(Data.Instance.Tree.states[i].states);
+
+					for (int j = 0; j < Data.Instance.Tree.states[i].transitions.Length; j++)
+					{
+						StatesGrid.Rows[n].Cells[j + 1].Value = ListToString(Data.Instance.Tree.states[i].transitions[j]);
+					}
 				}
-				
 			}
 		}
 

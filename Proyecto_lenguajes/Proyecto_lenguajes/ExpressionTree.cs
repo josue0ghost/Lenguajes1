@@ -36,7 +36,7 @@ namespace Proyecto_lenguajes
 
 	class State
 	{
-		// estados [Key]
+		// estados [Key]		
 		public List<int> states = new List<int>();
 		// transiciones [Value]
 		public List<int>[] transitions;
@@ -367,7 +367,11 @@ namespace Proyecto_lenguajes
 			if (root == null)
 			{
 				return;
-			}
+			}			
+
+			GetSymbols(root.Left);
+			GetSymbols(root.Right);
+
 			if (root.Leaf)
 			{
 				Leafs.Add(root);
@@ -376,9 +380,6 @@ namespace Proyecto_lenguajes
 					symbols.Add(root.Item);
 				}
 			}
-
-			GetSymbols(root.Left);
-			GetSymbols(root.Right);			
 		}
 
 		public bool CalculateTransitionsTable(Node root)
@@ -418,13 +419,17 @@ namespace Proyecto_lenguajes
 		private void GetTransitions(State st)
 		{
 			NoMoreStates = true;
+			// Para cada simbolo
 			for (int i = 0; i < symbols.Count; i++)
 			{
 				st.transitions[i] = new List<int>();
+				// para cada id de hojas en el estado
 				for (int j = 0; j < st.states.Count; j++)
 				{
-					// busca las coincidencias de la transicion con los symbolos
+					// busca las coincidencias de la transicion con los symbols
 					// según los estados
+
+					// st.states[j] es el id de la hoja, se resta 1 para obtener el index en la lista de hojas
 					if (Leafs[st.states[j] - 1].Item == symbols[i])
 					{
 						// si hay coincidencias se agregan los follows a esa transicion
@@ -432,9 +437,10 @@ namespace Proyecto_lenguajes
 					}
 				}
 			}
+			// Se terminaron de calcular las transiciones del estado
 			st.Setted = true;
 
-
+			// Busca las transiciones que no estén incluidas en la lista de estados y las agrega
 			for (int i = 0; i < st.transitions.Length; i++)
 			{
 				// si la transición no está en el conjunto de estados		
@@ -451,7 +457,7 @@ namespace Proyecto_lenguajes
 		{
 			for (int i = 0; i < a.Count; i++)
 			{
-				if (b.All(x => a[i].Contains(x)) && b.Count == a[i].Count) // equals
+				if (b.All(x => a[i].Contains(x)) && b.Count == a[i].Count) // son totalmente iguales
 				{
 					return true;
 				}				

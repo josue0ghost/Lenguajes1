@@ -51,7 +51,7 @@
             this.First,
             this.Last,
             this.Nullable});
-			this.FLNGrid.Location = new System.Drawing.Point(12, 288);
+			this.FLNGrid.Location = new System.Drawing.Point(12, 12);
 			this.FLNGrid.Name = "FLNGrid";
 			this.FLNGrid.Size = new System.Drawing.Size(444, 150);
 			this.FLNGrid.TabIndex = 0;
@@ -82,7 +82,7 @@
 			this.FollowGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.SymbolF,
             this.Follow});
-			this.FollowGrid.Location = new System.Drawing.Point(462, 288);
+			this.FollowGrid.Location = new System.Drawing.Point(462, 12);
 			this.FollowGrid.Name = "FollowGrid";
 			this.FollowGrid.Size = new System.Drawing.Size(244, 150);
 			this.FollowGrid.TabIndex = 1;
@@ -102,9 +102,9 @@
 			this.StatesGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.StatesGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.State});
-			this.StatesGrid.Location = new System.Drawing.Point(712, 288);
+			this.StatesGrid.Location = new System.Drawing.Point(12, 168);
 			this.StatesGrid.Name = "StatesGrid";
-			this.StatesGrid.Size = new System.Drawing.Size(289, 150);
+			this.StatesGrid.Size = new System.Drawing.Size(694, 270);
 			this.StatesGrid.TabIndex = 2;
 			// 
 			// State
@@ -116,7 +116,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1014, 450);
+			this.ClientSize = new System.Drawing.Size(719, 450);
 			this.Controls.Add(this.StatesGrid);
 			this.Controls.Add(this.FollowGrid);
 			this.Controls.Add(this.FLNGrid);
