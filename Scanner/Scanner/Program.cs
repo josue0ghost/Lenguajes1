@@ -1,0 +1,239 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+namespace Scanner
+{
+	class Automata
+	{
+		static Queue<char> Entrada = new Queue<char>();
+		static string token = "";
+		static char[] LETRAarray = new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','_'};
+		static List<char> LETRA = new List<char>(LETRAarray);
+		static char[] DIGITOarray = new char[] {'0','1','2','3','4','5','6','7','8','9'};
+		static List<char> DIGITO = new List<char>(DIGITOarray);
+		static char[] CHARSETarray = new char[] {' ','!','\"','#','$','%','&','\'','(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8','9',':',';','<','=','>','?','@','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','[','\\',']','^','_','`','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','{','|','}','~','','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?'};
+		static List<char> CHARSET = new List<char>(CHARSETarray);
+		static void Main()
+		{
+			Console.WriteLine("Entrada: ");
+			string input = Console.ReadLine();
+			char[] cinput = input.ToCharArray();
+			bool aceptacion = false;
+			Entrada = new Queue<char>(cinput);
+			int Estado = 0;
+			while(Entrada.Count > 0)
+			{
+				char ToConsume = Entrada.Peek();
+				switch (Estado)
+				{
+					case 0:
+						Estado = Trans0(ToConsume);
+						aceptacion = true;
+						break;
+					case 1:
+						Estado = Trans1(ToConsume);
+						aceptacion = true;
+						break;
+					case 2:
+						Estado = Trans2(ToConsume);
+						aceptacion = false;
+						break;
+					case 3:
+						Estado = Trans3(ToConsume);
+						aceptacion = false;
+						break;
+					case 4:
+						Estado = Trans4(ToConsume);
+						aceptacion = true;
+						break;
+					case 5:
+						Estado = Trans5(ToConsume);
+						aceptacion = true;
+						break;
+					case 6:
+						Estado = Trans6(ToConsume);
+						aceptacion = false;
+						break;
+					case 7:
+						Estado = Trans7(ToConsume);
+						aceptacion = false;
+						break;
+					default:
+						break;
+				}
+				if (Estado == -1 && aceptacion == true)
+				{
+					//obtenerToken(token);
+					Estado = 0;
+					aceptacion = false;
+				}
+				if (Estado == -1 && aceptacion == false)
+				{
+					//obtenerToken(token);
+					Estado = 0;
+					Entrada.Dequeue();
+				}
+			}
+			if (Estado == 0 || Estado == 1 || Estado == 4 || Estado == 5)
+			{
+				//obtenerToken(token);
+			}
+		}
+		static int Trans0(char input)
+		{
+			int ret;
+			switch (input)
+			{
+				case '"':
+					ret = 2;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				case '\'':
+					ret = 3;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				case '=':
+					ret = 4;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				default:
+					ret = -1;
+					break;
+			}
+			if (DIGITO.IndexOf(input) >= 0)
+			{
+				ret = 1;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans1(char input)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (DIGITO.IndexOf(input) >= 0)
+			{
+				ret = 1;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			if (LETRA.IndexOf(input) >= 0)
+			{
+				ret = 5;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans2(char input)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (CHARSET.IndexOf(input) >= 0)
+			{
+				ret = 6;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans3(char input)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (CHARSET.IndexOf(input) >= 0)
+			{
+				ret = 7;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans4(char input)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+		static int Trans5(char input)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (DIGITO.IndexOf(input) >= 0)
+			{
+				ret = 5;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			if (LETRA.IndexOf(input) >= 0)
+			{
+				ret = 5;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans6(char input)
+		{
+			int ret;
+			switch (input)
+			{
+				case '"':
+					ret = 4;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+		static int Trans7(char input)
+		{
+			int ret;
+			switch (input)
+			{
+				case '\'':
+					ret = 4;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+	}
+}

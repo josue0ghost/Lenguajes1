@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+
 
 namespace Proyecto_lenguajes
 {
 	class FileReader
 	{
-		public Dictionary<string, List<byte>> Sets = new Dictionary<string, List<byte>>();
+		public Dictionary<string, List<char>> Sets = new Dictionary<string, List<char>>();
 		public Dictionary<string, List<string>> Tokens = new Dictionary<string, List<string>>();
 		public Dictionary<string, List<string>> Actions = new Dictionary<string, List<string>>();
 		public Dictionary<int, string> Errors = new Dictionary<int, string>();
 
+		public Dictionary<string, ExpressionTree> Trees = new Dictionary<string, ExpressionTree>();
+		
 		public string Error { get; set; }
 		public string Warning { get; set; }
 		private bool ContainsSets { get; set; }
@@ -196,9 +198,9 @@ namespace Proyecto_lenguajes
 			bool lastWasConcat = false;
 
 			// lista de bytes asociadas a un Set
-			List<byte> Bytes = new List<byte>();
+			List<char> Bytes = new List<char>();
 			bool Range = false;
-			byte infByte = 0, supByte = 0;
+			char infByte = '\0', supByte = '\0';
 			for (int i = 0; i < expression.Length; i++)
 			{
 				// expresiones '<char>'
@@ -216,20 +218,19 @@ namespace Proyecto_lenguajes
 							this.Error = "No se puede convertir explícitamente <string> en <char>";
 							return !ValidSet;
 						}
-
-						byte[] aux = Encoding.ASCII.GetBytes(expression[i + 1].ToString());
+						char aux = expression[i + 1];
 						if (infByte == 0)
-						{							
-							infByte = aux[0];
+						{
+							infByte = aux;
 						}
 						else
 						{
-							supByte = aux[0];
+							supByte = aux;
 
 							AddToList(Bytes, infByte, supByte);
 
-							infByte = 0;
-							supByte = 0;
+							infByte = '\0';
+							supByte = '\0';
 						}
 					}
 					catch (Exception)
@@ -279,19 +280,19 @@ namespace Proyecto_lenguajes
 							i++;
 						}
 
-						byte[] aux = new byte[] { (byte)int.Parse(num) };
+						char aux = (char)int.Parse(num);
 						if (infByte == 0)
 						{
-							infByte = aux[0];
+							infByte = aux;
 						}
 						else
 						{
-							supByte = aux[0];
+							supByte = aux;
 
 							AddToList(Bytes, infByte, supByte);
 							
-							infByte = 0;
-							supByte = 0;
+							infByte = '\0';
+							supByte = '\0';
 						}
 					}
 					catch (Exception)
@@ -354,7 +355,7 @@ namespace Proyecto_lenguajes
 						if (Range == false)
 						{
 							Bytes.Add(infByte);
-							infByte = 0;
+							infByte = '\0';
 						}
 						Range = false;
 					}
@@ -393,11 +394,12 @@ namespace Proyecto_lenguajes
 			return ValidSet;
 		}
 
-		internal void AddToList(List<byte> list, byte a, byte b)
+		internal void AddToList(List<char> list, char a, char b)
 		{
 			for (int i = a; i <= b; i++)
 			{
-				list.Add((byte)i);
+				char[] x = Encoding.ASCII.GetChars(new byte[] { (byte)i });
+				list.Add(x[0]);
 			}
 		}
 
@@ -685,6 +687,7 @@ namespace Proyecto_lenguajes
 			}
 
 			Tokens.Add(id, tlist);
+			Trees.Add(id, ET);
 
 			return ValidToken;
 		}

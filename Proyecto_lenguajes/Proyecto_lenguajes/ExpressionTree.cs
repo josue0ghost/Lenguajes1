@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Proyecto_lenguajes
 {
@@ -40,6 +41,7 @@ namespace Proyecto_lenguajes
 		public List<int> states = new List<int>();
 		// transiciones [Value]
 		public List<int>[] transitions;
+
 		// para evitar StackOverflow
 		public bool Setted;
 
@@ -54,16 +56,20 @@ namespace Proyecto_lenguajes
 	{
 		public Node Root { get; set; }
 		public string Error = "";
-		private Stack<string> tokens = new Stack<string>();
-		private Stack<ExpressionTree> trees = new Stack<ExpressionTree>();
 		private int lastPrecedence = int.MaxValue;
-		private int STid = 1;
-		public Dictionary<int, List<int>> Follows = new Dictionary<int, List<int>>();
-		public Dictionary<List<int>, List<int>[]> tabla = new Dictionary<List<int>, List<int>[]>();
+		public int TerminalSymbolID = 1;
+
+		private Stack<string> tokens = new Stack<string>();					// pila de tokens para crear el arbol
+		private Stack<ExpressionTree> trees = new Stack<ExpressionTree>();	// pila de arboles para crear el arbol
+		
+		public Dictionary<int, List<int>> Follows = new Dictionary<int, List<int>>();	
+		
+		public List<State> states = new List<State>();			// Lista de estados del autómata
+		private List<List<int>> AuxS = new List<List<int>>();
+		
+		// utilizados para crear la tabla de estados
 		public List<string> symbols = new List<string>();
 		private List<Node> Leafs = new List<Node>();
-		public List<State> states = new List<State>();
-		private List<List<int>> AuxS = new List<List<int>>();
 
 		private void GetLastPrecedence(string token)
 		{
@@ -234,6 +240,7 @@ namespace Proyecto_lenguajes
 			this.Root = result.Root;
 		}
 
+		#region First, Last n' Follow
 		/// <summary>
 		/// Calculos realizando un recorrido post order
 		/// </summary>
@@ -258,9 +265,9 @@ namespace Proyecto_lenguajes
 
 			if (root.Leaf) // nodo hoja es ST
 			{
-				Follows.Add(STid, new List<int>());
-				root.Id = STid;
-				STid++;
+				Follows.Add(TerminalSymbolID, new List<int>());
+				root.Id = TerminalSymbolID;
+				TerminalSymbolID++;
 
 				root.First.Add(root.Id);
 				root.Last.Add(root.Id);
@@ -347,6 +354,7 @@ namespace Proyecto_lenguajes
 				}				
 			}
 		}
+		#endregion
 
 		private void SortAll(Node root)
 		{
@@ -444,7 +452,7 @@ namespace Proyecto_lenguajes
 			for (int i = 0; i < st.transitions.Length; i++)
 			{
 				// si la transición no está en el conjunto de estados		
-				if (Contains(AuxS, st.transitions[i]) == false)
+				if (Contains(AuxS, st.transitions[i]) == false && st.transitions[i].Count > 0)
 				{
 					states.Add(new State(symbols.Count, st.transitions[i]));
 					AuxS.Add(st.transitions[i]);

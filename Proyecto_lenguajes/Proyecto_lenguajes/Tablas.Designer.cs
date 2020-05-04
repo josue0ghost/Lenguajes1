@@ -38,9 +38,13 @@
 			this.Follow = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.StatesGrid = new System.Windows.Forms.DataGridView();
 			this.State = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.generarScanerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.FLNGrid)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.FollowGrid)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.StatesGrid)).BeginInit();
+			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// FLNGrid
@@ -51,7 +55,7 @@
             this.First,
             this.Last,
             this.Nullable});
-			this.FLNGrid.Location = new System.Drawing.Point(12, 12);
+			this.FLNGrid.Location = new System.Drawing.Point(12, 27);
 			this.FLNGrid.Name = "FLNGrid";
 			this.FLNGrid.Size = new System.Drawing.Size(444, 150);
 			this.FLNGrid.TabIndex = 0;
@@ -82,7 +86,7 @@
 			this.FollowGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.SymbolF,
             this.Follow});
-			this.FollowGrid.Location = new System.Drawing.Point(462, 12);
+			this.FollowGrid.Location = new System.Drawing.Point(462, 27);
 			this.FollowGrid.Name = "FollowGrid";
 			this.FollowGrid.Size = new System.Drawing.Size(244, 150);
 			this.FollowGrid.TabIndex = 1;
@@ -102,7 +106,7 @@
 			this.StatesGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.StatesGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.State});
-			this.StatesGrid.Location = new System.Drawing.Point(12, 168);
+			this.StatesGrid.Location = new System.Drawing.Point(12, 183);
 			this.StatesGrid.Name = "StatesGrid";
 			this.StatesGrid.Size = new System.Drawing.Size(694, 270);
 			this.StatesGrid.TabIndex = 2;
@@ -112,21 +116,50 @@
 			this.State.HeaderText = "State";
 			this.State.Name = "State";
 			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.archivoToolStripMenuItem});
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(719, 24);
+			this.menuStrip1.TabIndex = 3;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
+			// archivoToolStripMenuItem
+			// 
+			this.archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.generarScanerToolStripMenuItem});
+			this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
+			this.archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+			this.archivoToolStripMenuItem.Text = "Archivo";
+			// 
+			// generarScanerToolStripMenuItem
+			// 
+			this.generarScanerToolStripMenuItem.Name = "generarScanerToolStripMenuItem";
+			this.generarScanerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.generarScanerToolStripMenuItem.Text = "Generar scaner";
+			this.generarScanerToolStripMenuItem.Click += new System.EventHandler(this.generarScanerToolStripMenuItem_Click);
+			// 
 			// Tablas
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(719, 450);
+			this.ClientSize = new System.Drawing.Size(719, 462);
 			this.Controls.Add(this.StatesGrid);
 			this.Controls.Add(this.FollowGrid);
 			this.Controls.Add(this.FLNGrid);
+			this.Controls.Add(this.menuStrip1);
 			this.Name = "Tablas";
 			this.Text = "Tablas";
 			this.Load += new System.EventHandler(this.Tablas_Load);
 			((System.ComponentModel.ISupportInitialize)(this.FLNGrid)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.FollowGrid)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.StatesGrid)).EndInit();
+			this.menuStrip1.ResumeLayout(false);
+			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -142,5 +175,8 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn Follow;
 		private System.Windows.Forms.DataGridView StatesGrid;
 		private System.Windows.Forms.DataGridViewTextBoxColumn State;
+		private System.Windows.Forms.MenuStrip menuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem archivoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem generarScanerToolStripMenuItem;
 	}
 }
