@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -45,8 +46,11 @@ namespace Proyecto_lenguajes
 				output += PrintTransFunctions(i);
 			}
 
+			output += PrintObtenerToken();
+
 			output += "\t}\n" +
-						"}";
+						"}";			
+
 			return output;
 		}
 
@@ -148,13 +152,19 @@ namespace Proyecto_lenguajes
 
 			result +=	"\t\t\t\tif (Estado == -1 && aceptacion == true)\n" +
 						"\t\t\t\t{\n" +
-						"\t\t\t\t\tobtenerToken(token);\n" +
+						"\t\t\t\t\tstring tkn = obtenerToken(token);\n" +
+						"\t\t\t\t\tConsole.WriteLine(token + \" = \" + tkn);\n" +
+						"\t\t\t\t\tEntrada.Dequeue();\n" +
+						"\t\t\t\t\ttoken = \"\";\n"  +
 						"\t\t\t\t\tEstado = 0;\n" +
 						"\t\t\t\t\taceptacion = false;\n" +
 						"\t\t\t\t}\n" +
 						"\t\t\t\tif (Estado == -1 && aceptacion == false)\n" +
 						"\t\t\t\t{\n" +
-						"\t\t\t\t\tobtenerToken(token);\n" +
+						"\t\t\t\t\tstring tkn = obtenerToken(token);\n" +
+						"\t\t\t\t\tConsole.WriteLine(token + \" = \" + tkn);\n" +
+						"\t\t\t\t\tEntrada.Dequeue();\n" +
+						"\t\t\t\t\ttoken = \"\";\n" +
 						"\t\t\t\t\tEstado = 0;\n" +
 						"\t\t\t\t\tEntrada.Dequeue();\n" +
 						"\t\t\t\t}\n";
@@ -184,7 +194,9 @@ namespace Proyecto_lenguajes
 
 			result +=	")\n" +
 						"\t\t\t{\n" +
-						"\t\t\t\tobtenerToken(token);\n" +
+						"\t\t\t\tstring tkn = obtenerToken(token);\n" +
+						"\t\t\t\tConsole.WriteLine(token + \" = \" + tkn);\n" +
+						"\t\t\t\ttoken = \"\";\n" +
 						"\t\t\t}\n";
 			 
 			return result;
@@ -271,6 +283,113 @@ namespace Proyecto_lenguajes
 					break;
 				}
 			}
+			return result;
+		}
+
+		private string PrintObtenerToken()
+		{
+			string result = "";
+
+			result += "\t\tstatic string obtenerToken(string cadena)\n" +
+						"\t\t{\n" +
+						"\t\t\tstring tkn = \"\";\n";
+			result += PrintTokens();
+			result += "\t\t\tDictionary<int, string> actions = new Dictionary<int, string>(){";
+
+			Dictionary<string, List<string>> actions = Data.Instance.fr.Actions;
+
+			for (int i = 0; i < actions.Count; i++)
+			{
+				result += PrintActions(actions.Values.ElementAt(i));
+			}
+			result.Remove(result.Length - 1); // eliminar ultima ,
+			result += "};\n";
+
+			result +=	"\t\t\tif (actions.FirstOrDefault(x => x.Value.Equals(cadena, StringComparison.OrdinalIgnoreCase)).Value != null)\n" +
+						"\t\t\t{\n" +
+						"\t\t\t\ttkn = actions.FirstOrDefault(x => x.Value.Equals(cadena, StringComparison.OrdinalIgnoreCase)).Key.ToString();\n" +
+						"\t\t\t}\n" +
+						"\t\t\telse if (tokensVal.Contains(cadena))\n" +
+						"\t\t\t{\n" +
+						"\t\t\t\tint index = tokensVal.IndexOf(cadena);\n" +
+						"\t\t\t\ttkn = tokensID[index];\n" +
+						"\t\t\t}\n";
+
+			result += "\t\t\treturn tkn;\n";
+			result += "\t\t}\n";
+			return result;
+		}
+
+		internal bool TokenUsesSets(List<string> token)
+		{
+			for (int i = 0; i < token.Count; i++)
+			{
+				if (Data.Instance.fr.Sets.ContainsKey(token[i]))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		internal string Concat(List<string> token)
+		{
+			string result = "";
+
+			for (int i = 0; i < token.Count; i++)
+			{
+				if (token[i] != ".")
+				{					
+					result += token[i][1].ToString();
+				}
+			}
+			return result;
+		}
+
+		private string PrintTokens()
+		{
+			string result = "";
+
+			result += "\t\t\tList<string> tokensVal = new List<string> {";
+			Dictionary<string, List<string>> tokens = Data.Instance.fr.Tokens;
+			for (int i = 0; i < tokens.Count; i++)
+			{
+				if (!TokenUsesSets(tokens.Values.ElementAt(i)))
+				{
+					result += "\"" + Concat(tokens.Values.ElementAt(i)) + "\",";
+				}
+				else
+				{
+					result += "\"\",";
+				}
+			}
+			result = result.Remove(result.Length - 1);
+			result += "};\n";
+
+			result += "\t\t\tList<string> tokensID = new List<string> {";
+			for (int i = 0; i < tokens.Count; i++)
+			{
+				result += "\"" + tokens.Keys.ElementAt(i).Remove(0,5) + "\",";				
+			}
+			result = result.Remove(result.Length - 1);
+			result += "};\n";
+
+			return result;
+		}
+
+		private string PrintActions(List<string> action)
+		{
+			string result = "";		
+			
+			for (int i = 0; i < action.Count; i++)
+			{
+				if (action[i].Replace('\t'.ToString(), "").Replace(" ", "") != "")
+				{
+					string[] reservada = action[i].Split('=');
+					result += "{" + reservada[0] + ", \"" + reservada[1].Replace("'", "").Replace(" ", "") + "\"},";
+				}				
+			}			
+
 			return result;
 		}
 	}

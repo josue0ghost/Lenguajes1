@@ -64,20 +64,28 @@ namespace Scanner
 				}
 				if (Estado == -1 && aceptacion == true)
 				{
-					//obtenerToken(token);
+					string tkn = obtenerToken(token);
+					Console.WriteLine(token + " = " + tkn);
+					Entrada.Dequeue();
+					token = "";
 					Estado = 0;
 					aceptacion = false;
 				}
 				if (Estado == -1 && aceptacion == false)
 				{
-					//obtenerToken(token);
+					string tkn = obtenerToken(token);
+					Console.WriteLine(token + " = " + tkn);
+					Entrada.Dequeue();
+					token = "";
 					Estado = 0;
 					Entrada.Dequeue();
 				}
 			}
 			if (Estado == 0 || Estado == 1 || Estado == 4 || Estado == 5)
 			{
-				//obtenerToken(token);
+				string tkn = obtenerToken(token);
+				Console.WriteLine(token + " = " + tkn);
+				token = "";
 			}
 		}
 		static int Trans0(char input)
@@ -110,6 +118,12 @@ namespace Scanner
 				token += input.ToString();
 				Entrada.Dequeue();
 			}
+			if (LETRA.IndexOf(input) >= 0)
+			{
+				ret = 5;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
 			return ret;
 		}
 		static int Trans1(char input)
@@ -124,12 +138,6 @@ namespace Scanner
 			if (DIGITO.IndexOf(input) >= 0)
 			{
 				ret = 1;
-				token += input.ToString();
-				Entrada.Dequeue();
-			}
-			if (LETRA.IndexOf(input) >= 0)
-			{
-				ret = 5;
 				token += input.ToString();
 				Entrada.Dequeue();
 			}
@@ -234,6 +242,23 @@ namespace Scanner
 					break;
 			}
 			return ret;
+		}
+		static string obtenerToken(string cadena)
+		{
+			string tkn = "";
+			List<string> tokensVal = new List<string> {"","","=",""};
+			List<string> tokensID = new List<string> {"1","2","4","3"};
+			Dictionary<int, string> actions = new Dictionary<int, string>(){{18 , "PROGRAM"},{19 , "INCLUDE"},{20 , "CONST"},{21 , "TYPE"},{22 , "VAR"},{23 , "RECORD"},{24 , "ARRAY"},{25 , "OF"},{26 , "PROCEDURE"},{27 , "FUNCTION"},{28 , "IF"},{29 , "THEN"},{30 , "ELSE"},{31 , "FOR"},{32 , "TO"},{33 , "WHILE"},{34 , "DO"},{35 , "EXIT"},{36 , "END"},{37 , "CASE"},{38 , "BREAK"},{39 , "DOWNTO"},};
+			if (actions.FirstOrDefault(x => x.Value.Equals(cadena, StringComparison.OrdinalIgnoreCase)).Value != null)
+			{
+				tkn = actions.FirstOrDefault(x => x.Value.Equals(cadena, StringComparison.OrdinalIgnoreCase)).Key.ToString();
+			}
+			else if (tokensVal.Contains(cadena))
+			{
+				int index = tokensVal.IndexOf(cadena);
+				tkn = tokensID[index];
+			}
+			return tkn;
 		}
 	}
 }
