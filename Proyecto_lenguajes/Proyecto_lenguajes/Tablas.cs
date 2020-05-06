@@ -168,7 +168,7 @@ namespace Proyecto_lenguajes
 			compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
 			compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
 
-			codeDomProvider.CompileAssemblyFromFile(compilerParams, filepath);
+			codeDomProvider.CompileAssemblyFromFile(compilerParams, sourceName);
 		}	
 	}
 }
