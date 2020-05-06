@@ -114,12 +114,23 @@ namespace Proyecto_lenguajes
 						"\t\t\tint Estado = 0;\n" +
 						"\t\t\twhile(Entrada.Count > 0)\n" +
 						"\t\t\t{\n" +
-						"\t\t\t\tchar ToConsume = Entrada.Peek();\n";
+						"\t\t\t\tchar ToConsume = Entrada.Peek();\n" +
+						"\t\t\t\tif (ToConsume != ' ' && ToConsume != '\\t'){\n";
 
 			result += PrintMainSwitch(Data.Instance.Tree);
 			result += AcceptConditions();
+			result +=	"\t\t\t}else{\n" +
+						"\t\t\tif (token != \"\"){\n" +
+						"\t\t\tstring tkn = obtenerToken(token);\n" +
+						"\t\t\tConsole.WriteLine(token + \" = \" + tkn);\n" +
+						"\t\t\ttoken = \"\";\n" +
+						"\t\t\tEstado = 0;\n" +
+						"\t\t\tEntrada.Dequeue();\n" +
+						"\t\t\t}}\n";
 			result +=   "\t\t\t}\n";
 			result += AcceptConditionsv2();
+			result +=	"\t\t\tConsole.WriteLine(\"TERMINADO\");\n";
+			result +=	"\t\t\tConsole.ReadLine();\n";
 			result +=	"\t\t}\n";
 			
 			return result;
@@ -158,7 +169,7 @@ namespace Proyecto_lenguajes
 						"\t\t\t\t{\n" +
 						"\t\t\t\t\tstring tkn = obtenerToken(token);\n" +
 						"\t\t\t\t\tConsole.WriteLine(token + \" = \" + tkn);\n" +
-						"\t\t\t\t\tEntrada.Dequeue();\n" +
+						//"\t\t\t\t\tEntrada.Dequeue();\n" +
 						"\t\t\t\t\ttoken = \"\";\n"  +
 						"\t\t\t\t\tEstado = 0;\n" +
 						"\t\t\t\t\taceptacion = false;\n" +
@@ -167,7 +178,7 @@ namespace Proyecto_lenguajes
 						"\t\t\t\t{\n" +
 						"\t\t\t\t\tstring tkn = obtenerToken(token);\n" +
 						"\t\t\t\t\tConsole.WriteLine(token + \" = \" + tkn);\n" +
-						"\t\t\t\t\tEntrada.Dequeue();\n" +
+						//"\t\t\t\t\tEntrada.Dequeue();\n" +
 						"\t\t\t\t\ttoken = \"\";\n" +
 						"\t\t\t\t\tEstado = 0;\n" +
 						"\t\t\t\t}\n";
@@ -248,7 +259,8 @@ namespace Proyecto_lenguajes
 			result +=	"\t\t\t\tdefault:\n" +
 						"\t\t\t\t\tret = -1;\n" +
 						"\t\t\t\t\tbreak;\n" +
-						"\t\t\t}\n";
+						"\t\t\t}\n" +
+						"\t\t\tif (ret == -1){\n";
 
 			for (int i = 0; i < Tree.states[Estado].transitions.Length; i++)
 			{
@@ -268,7 +280,7 @@ namespace Proyecto_lenguajes
 					}
 				}				
 			}
-
+			result += "\t\t\t}\n";
 			result +=	"\t\t\treturn ret;\n" +
 						"\t\t}\n";
 			return result;
@@ -539,7 +551,8 @@ namespace Proyecto_lenguajes
 			result += "\t\t\t\tdefault:\n" +
 						"\t\t\t\t\tret = -1;\n" +
 						"\t\t\t\t\tbreak;\n" +
-						"\t\t\t}\n";
+						"\t\t\t}\n" +
+						"\t\t\tif (ret == -1){\n";
 
 			for (int i = 0; i < Tree.states[Estado].transitions.Length; i++)
 			{
@@ -558,7 +571,7 @@ namespace Proyecto_lenguajes
 					}
 				}
 			}
-
+			result += "\t\t\t}\n";
 			result += "\t\t\treturn ret;\n" +
 						"\t\t}\n";
 			return result;

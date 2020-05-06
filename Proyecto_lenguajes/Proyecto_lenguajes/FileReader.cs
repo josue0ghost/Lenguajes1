@@ -682,7 +682,8 @@ namespace Proyecto_lenguajes
 			// Analizar errores en ER
 			ExpressionTree ET = new ExpressionTree();
 			ET.CreateTree(tlist, id);
-
+			ET.ClaculateFirst_Last_n_Follow();
+			ET.CalculateTransitionsTable(ET.Root);
 			if (ET.Error != "")
 			{
 				this.Error = ET.Error;

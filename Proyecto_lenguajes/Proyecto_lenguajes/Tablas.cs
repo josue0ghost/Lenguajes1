@@ -16,9 +16,7 @@ using System.Windows.Forms;
 namespace Proyecto_lenguajes
 {
 	public partial class Tablas : Form
-	{
-		Scanner sc = new Scanner();
-
+	{		
 		public Tablas()
 		{
 			InitializeComponent();
@@ -41,7 +39,8 @@ namespace Proyecto_lenguajes
 		}
 
 		private void GetFunctions()
-		{			
+		{
+			Scanner sc = new Scanner();
 			sc.GenerateExpressionTree(Data.Instance.fr);
 
 			Data.Instance.Tree.ClaculateFirst_Last_n_Follow();
@@ -135,6 +134,7 @@ namespace Proyecto_lenguajes
 
 		private void generarScanerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Scanner sc = new Scanner();
 			SaveFileDialog saveFileDialog = new SaveFileDialog();
 			saveFileDialog.Filter = "C# files (*.cs)|*.cs";
 
@@ -150,25 +150,33 @@ namespace Proyecto_lenguajes
 				}
 
 				CsCompile(path);
+
+				MessageBox.Show("Compliación terminada...");
 			}
 		}
 
 		private void CsCompile(string sourceName)
-		{
-			string language = CSharpCodeProvider.GetLanguageFromExtension(Path.GetExtension(sourceName));
-			CodeDomProvider codeDomProvider = CSharpCodeProvider.CreateProvider(language);
-			CompilerParameters compilerParams = new CompilerParameters();
-			compilerParams.GenerateExecutable = true;
-			compilerParams.GenerateInMemory = true;
-			compilerParams.IncludeDebugInformation = false;
+		{			
+			CodeDomProvider codeDomProvider = CodeDomProvider.CreateProvider("CSharp");
+			CompilerParameters cParams = new CompilerParameters(new[] { "mscorlib.dll", "System.Core.dll" });
+			cParams.GenerateExecutable = true;
+			cParams.GenerateInMemory = false;
+			cParams.TreatWarningsAsErrors = false;
+			cParams.IncludeDebugInformation = false;
 
-			string extAssembly = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),"Extensibility.dll");
-			compilerParams.ReferencedAssemblies.Add(extAssembly);
-			compilerParams.ReferencedAssemblies.Add("System.dll");
-			compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
-			compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
+			String exeName = String.Format(@"{0}.exe", sourceName.Replace(".", "_"));
+			cParams.OutputAssembly = exeName;
 
-			codeDomProvider.CompileAssemblyFromFile(compilerParams, sourceName);
+			//string extAssembly = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),"Extensibility.dll");
+			
+			//cParams.ReferencedAssemblies.Add(extAssembly);
+			cParams.ReferencedAssemblies.Add("System.dll");
+			cParams.ReferencedAssemblies.Add("System.Drawing.dll");
+			cParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
+
+			CompilerResults results = codeDomProvider.CompileAssemblyFromFile(cParams, sourceName);
+
+			
 		}	
 	}
 }
