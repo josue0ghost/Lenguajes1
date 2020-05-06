@@ -155,6 +155,10 @@ namespace Proyecto_lenguajes
 			}
 		}
 
+		/// <summary>
+		/// Método para compilar un archivo
+		/// </summary>
+		/// <param name="sourceName"></param>
 		private void CsCompile(string sourceName)
 		{			
 			CodeDomProvider codeDomProvider = CodeDomProvider.CreateProvider("CSharp");

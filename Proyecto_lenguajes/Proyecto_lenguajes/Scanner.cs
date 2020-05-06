@@ -14,6 +14,10 @@ namespace Proyecto_lenguajes
 		int NoFoo = 0;
 		int NoCase = 0;
 
+		/// <summary>
+		/// Creacion de árbol general de expresión. Une todos los tokens separando por '|' para generar un super árbol de expresión
+		/// </summary>
+		/// <param name="fr"></param>
 		public void GenerateExpressionTree(FileReader fr)
 		{
 			GeneralER.Add("(");
@@ -36,6 +40,10 @@ namespace Proyecto_lenguajes
 			Data.Instance.Tree.CreateTree(GeneralER, "");			
 		}
 
+		/// <summary>
+		/// Método para generar el código en una cadena
+		/// </summary>
+		/// <returns></returns>
 		public string GenerateScanner()
 		{
 			string output = Librerias();
@@ -57,6 +65,10 @@ namespace Proyecto_lenguajes
 			return output;
 		}
 
+		/// <summary>
+		/// Librerías necesarias para el código generado
+		/// </summary>
+		/// <returns></returns>
 		private string Librerias()
 		{
 			return "using System;\n" +
@@ -65,6 +77,10 @@ namespace Proyecto_lenguajes
 				"using System.Linq;\n";
 		}
 
+		/// <summary>
+		/// Escritura de la instancia de la clase y variables globales
+		/// </summary>
+		/// <returns></returns>
 		private string Clase()
 		{
 			return	"namespace Scanner\n" +
@@ -75,6 +91,10 @@ namespace Proyecto_lenguajes
 					"\t\tstatic string token =" + " \"\";\n";        		
 		}
 
+		/// <summary>
+		/// Importacion de los SETS hacia el código
+		/// </summary>
+		/// <returns></returns>
 		private string AgregarSets()
 		{			
 			string result = "";
@@ -101,6 +121,10 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Impresión del método Main()
+		/// </summary>
+		/// <returns></returns>
 		private string PrintMain()
 		{
 			string result = "";
@@ -136,6 +160,11 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Impresión de estructura switch-case para el método Main()
+		/// </summary>
+		/// <param name="Tree"></param>
+		/// <returns></returns>
 		private string PrintMainSwitch(ExpressionTree Tree)
 		{
 			string result = "";
@@ -161,6 +190,10 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Condiciones de aceptación al términar de ejecutar la estructura switch-case para Main()
+		/// </summary>
+		/// <returns></returns>
 		private string AcceptConditions()
 		{
 			string result = "";
@@ -186,6 +219,10 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Segundas condiciones para cuando Entrada.Count == 0 y falte un token por obtener
+		/// </summary>
+		/// <returns></returns>
 		private string AcceptConditionsv2()
 		{
 			string result = "";
@@ -216,6 +253,12 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Funciones de transición. Devuelven el número de estado al que envía un caracter de entrada
+		/// </summary>
+		/// <param name="Estado"></param>
+		/// <param name="Tree"></param>
+		/// <returns></returns>
 		private string PrintTransFunctions(int Estado, ExpressionTree Tree)
 		{
 			string result = "";
@@ -286,6 +329,12 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Obtención del ID del estado al que lleva un caracter de entrada
+		/// </summary>
+		/// <param name="ToCompare"></param>
+		/// <param name="Tree"></param>
+		/// <returns></returns>
 		private int GetStateID(List<int> ToCompare, ExpressionTree Tree)
 		{
 			int result = -1;
@@ -301,6 +350,11 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Impresión de ACTIONS para reconocer las palabras reservadas
+		/// </summary>
+		/// <param name="action"></param>
+		/// <returns></returns>
 		private string PrintActions(List<string> action)
 		{
 			string result = "";
@@ -317,6 +371,11 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Verificación de si un TOKEN realiza llamadas a SETS. De esta forma se generan menos sub-autómatas
+		/// </summary>
+		/// <param name="token"></param>
+		/// <returns></returns>
 		internal bool TokenUsesSets(List<string> token)
 		{
 			for (int i = 0; i < token.Count; i++)
@@ -329,6 +388,11 @@ namespace Proyecto_lenguajes
 			return false;
 		}
 
+		/// <summary>
+		/// Concatenación de los símbolos terminales de un TOKEN (que no realiza llamadas a SETS)
+		/// </summary>
+		/// <param name="token"></param>
+		/// <returns></returns>
 		internal string Concat(List<string> token)
 		{
 			string result = "";
@@ -343,6 +407,10 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Impresión de una lista de "TOKENS" para la posterior obtención de su ID correspondiente
+		/// </summary>
+		/// <returns></returns>
 		private string PrintTokens()
 		{
 			string result = "";
@@ -376,6 +444,10 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Impresión de función de obtención de ID de token.
+		/// </summary>
+		/// <returns></returns>
 		private string PrintObtenerToken()
 		{
 			string result = "";
@@ -430,6 +502,12 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Generación de sub-autómatas (TOKENS que realizan llamadas a SETS)
+		/// </summary>
+		/// <param name="FooName"></param>
+		/// <param name="Tree"></param>
+		/// <returns></returns>
 		public string GenerateScannerv2(string FooName, ExpressionTree Tree)
 		{
 			string output = PrintFoo(FooName, Tree);
@@ -443,6 +521,12 @@ namespace Proyecto_lenguajes
 			return output;
 		}
 
+		/// <summary>
+		/// Versión para sub-autómatas de función Main()
+		/// </summary>
+		/// <param name="FooName"></param>
+		/// <param name="Tree"></param>
+		/// <returns></returns>
 		private string PrintFoo(string FooName, ExpressionTree Tree)
 		{
 			string result = "";
@@ -465,6 +549,10 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Versión para sub-autómatas de condiciones de aceptación
+		/// </summary>
+		/// <returns></returns>
 		private string FooAcceptConditions()
 		{
 			string result = "";
@@ -477,6 +565,11 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Versión para sub-autómatas de condiciones de aceptación cuando AuxEntrada.Count == 0
+		/// </summary>
+		/// <param name="Tree"></param>
+		/// <returns></returns>
 		private string FooAcceptConditionsv2(ExpressionTree Tree)
 		{
 			string result = "";
@@ -509,6 +602,12 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Versión para sub-autómatas de funciones de transicion
+		/// </summary>
+		/// <param name="Estado"></param>
+		/// <param name="Tree"></param>
+		/// <returns></returns>
 		private string FooPrintTransFunctions(int Estado, ExpressionTree Tree)
 		{
 			string result = "";
@@ -577,6 +676,11 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
+		/// <summary>
+		/// Versión para sub-autómatas de MainSwitch
+		/// </summary>
+		/// <param name="Tree"></param>
+		/// <returns></returns>
 		private string FooPrintSwitch(ExpressionTree Tree)
 		{
 			string result = "";

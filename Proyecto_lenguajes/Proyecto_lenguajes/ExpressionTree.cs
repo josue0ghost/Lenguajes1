@@ -461,6 +461,12 @@ namespace Proyecto_lenguajes
 			}
 		}
 
+		/// <summary>
+		/// Método de comparación de dos listas sin importar el orden de sus elementos
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <returns></returns>
 		private bool Contains(List<List<int>> a, List<int> b)
 		{
 			for (int i = 0; i < a.Count; i++)
