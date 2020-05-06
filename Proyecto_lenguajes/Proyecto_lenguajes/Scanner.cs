@@ -11,6 +11,8 @@ namespace Proyecto_lenguajes
 	class Scanner
 	{
 		List<string> GeneralER = new List<string>();
+		int NoFoo = 0;
+		int NoCase = 0;
 
 		public void GenerateExpressionTree(FileReader fr)
 		{
@@ -43,7 +45,8 @@ namespace Proyecto_lenguajes
 
 			for (int i = 0; i < Data.Instance.Tree.states.Count; i++)
 			{
-				output += PrintTransFunctions(i);
+				output += PrintTransFunctions(NoFoo, Data.Instance.Tree);
+				NoFoo++;
 			}
 
 			output += PrintObtenerToken();
@@ -113,7 +116,7 @@ namespace Proyecto_lenguajes
 						"\t\t\t{\n" +
 						"\t\t\t\tchar ToConsume = Entrada.Peek();\n";
 
-			result += PrintMainSwitch();
+			result += PrintMainSwitch(Data.Instance.Tree);
 			result += AcceptConditions();
 			result +=   "\t\t\t}\n";
 			result += AcceptConditionsv2();
@@ -122,19 +125,20 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
-		private string PrintMainSwitch()
+		private string PrintMainSwitch(ExpressionTree Tree)
 		{
 			string result = "";
 			result +=		"\t\t\t\tswitch (Estado)\n" +
 							"\t\t\t\t{\n";
 
-			for (int i = 0; i < Data.Instance.Tree.states.Count; i++)
+			for (int i = 0; i < Tree.states.Count; i++)
 			{
 				result +=	"\t\t\t\t\tcase " + i.ToString() + ":\n" +
-							"\t\t\t\t\t\tEstado = Trans" + i.ToString() + "(ToConsume);\n";
+							"\t\t\t\t\t\tEstado = Trans" + NoCase.ToString() + "(ToConsume);\n";
 
-				int STaccept = Data.Instance.Tree.TerminalSymbolID - 1;
-				string acceptStr = Data.Instance.Tree.states[i].states.Contains(STaccept) ? "aceptacion = true;" : "aceptacion = false;";
+				NoCase++;
+				int STaccept = Tree.TerminalSymbolID - 1;
+				string acceptStr = Tree.states[i].states.Contains(STaccept) ? "aceptacion = true;" : "aceptacion = false;";
 
 				result +=	"\t\t\t\t\t\t" + acceptStr + "\n" +
 							"\t\t\t\t\t\tbreak;\n";
@@ -166,7 +170,6 @@ namespace Proyecto_lenguajes
 						"\t\t\t\t\tEntrada.Dequeue();\n" +
 						"\t\t\t\t\ttoken = \"\";\n" +
 						"\t\t\t\t\tEstado = 0;\n" +
-						"\t\t\t\t\tEntrada.Dequeue();\n" +
 						"\t\t\t\t}\n";
 
 			return result;
@@ -202,21 +205,21 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
-		private string PrintTransFunctions(int Estado)
+		private string PrintTransFunctions(int Estado, ExpressionTree Tree)
 		{
 			string result = "";
 
-			result +=	"\t\tstatic int Trans" + Estado.ToString() + "(char input)\n" +
+			result +=	"\t\tstatic int Trans" + NoFoo.ToString() + "(char input)\n" +
 						"\t\t{\n" +
 						"\t\t\tint ret;\n" +
 						"\t\t\tswitch (input)\n" +
 						"\t\t\t{\n";
 
-			for (int i = 0; i < Data.Instance.Tree.states[Estado].transitions.Length; i++)
+			for (int i = 0; i < Tree.states[Estado].transitions.Length; i++)
 			{
-				if (Data.Instance.Tree.states[Estado].transitions[i].Count > 0)
+				if (Tree.states[Estado].transitions[i].Count > 0)
 				{
-					string Symb = Data.Instance.Tree.symbols[i];
+					string Symb = Tree.symbols[i];
 					if (Symb[0] == '\'') // '<char>'
 					{
 						if (Symb == "'''")
@@ -231,7 +234,7 @@ namespace Proyecto_lenguajes
 						{
 							result += "\t\t\t\tcase " + Symb + ":\n";
 						}
-						int NextState = GetStateID(Data.Instance.Tree.states[Estado].transitions[i]);
+						int NextState = GetStateID(Tree.states[Estado].transitions[i], Tree);
 
 						result += "\t\t\t\t\tret = " + NextState.ToString() + ";\n" +
 									"\t\t\t\t\ttoken += input.ToString();\n" +
@@ -247,14 +250,14 @@ namespace Proyecto_lenguajes
 						"\t\t\t\t\tbreak;\n" +
 						"\t\t\t}\n";
 
-			for (int i = 0; i < Data.Instance.Tree.states[Estado].transitions.Length; i++)
+			for (int i = 0; i < Tree.states[Estado].transitions.Length; i++)
 			{
-				if (Data.Instance.Tree.states[Estado].transitions[i].Count > 0)
+				if (Tree.states[Estado].transitions[i].Count > 0)
 				{
-					string Symb = Data.Instance.Tree.symbols[i];
+					string Symb = Tree.symbols[i];
 					if (Symb[0] != '\'') // SET
 					{
-						int NextState = GetStateID(Data.Instance.Tree.states[Estado].transitions[i]);
+						int NextState = GetStateID(Tree.states[Estado].transitions[i], Tree);
 
 						result += "\t\t\tif (" + Symb + ".IndexOf(input) >= 0)\n" +
 									"\t\t\t{\n" +
@@ -271,18 +274,93 @@ namespace Proyecto_lenguajes
 			return result;
 		}
 
-		private int GetStateID(List<int> ToCompare)
+		private int GetStateID(List<int> ToCompare, ExpressionTree Tree)
 		{
 			int result = -1;
-			for (int i = 0; i < Data.Instance.Tree.states.Count; i++)
+			for (int i = 0; i < Tree.states.Count; i++)
 			{
-				List<int> Comparing = Data.Instance.Tree.states[i].states;
+				List<int> Comparing = Tree.states[i].states;
 				if (ToCompare.All(x => Comparing.Contains(x)) && ToCompare.Count == Comparing.Count)
 				{
 					result = i;
 					break;
 				}
 			}
+			return result;
+		}
+
+		private string PrintActions(List<string> action)
+		{
+			string result = "";
+
+			for (int i = 0; i < action.Count; i++)
+			{
+				if (action[i].Replace('\t'.ToString(), "").Replace(" ", "") != "")
+				{
+					string[] reservada = action[i].Split('=');
+					result += "{" + reservada[0] + ", \"" + reservada[1].Replace("'", "").Replace(" ", "") + "\"},";
+				}
+			}
+
+			return result;
+		}
+
+		internal bool TokenUsesSets(List<string> token)
+		{
+			for (int i = 0; i < token.Count; i++)
+			{
+				if (Data.Instance.fr.Sets.ContainsKey(token[i]))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		internal string Concat(List<string> token)
+		{
+			string result = "";
+
+			for (int i = 0; i < token.Count; i++)
+			{
+				if (token[i] != ".")
+				{
+					result += token[i][1].ToString();
+				}
+			}
+			return result;
+		}
+
+		private string PrintTokens()
+		{
+			string result = "";
+
+			result += "\t\t\tList<string> tokensVal = new List<string> {";
+			Dictionary<string, List<string>> tokens = Data.Instance.fr.Tokens;
+			for (int i = 0; i < tokens.Count; i++)
+			{
+				if (!TokenUsesSets(tokens.Values.ElementAt(i)))
+				{
+					result += "\"" + Concat(tokens.Values.ElementAt(i)) + "\",";
+				}
+				else
+				{
+					result += "\"\",";
+					Data.Instance.fr.Trees[tokens.ElementAt(i).Key].ClaculateFirst_Last_n_Follow();
+					Data.Instance.fr.Trees[tokens.ElementAt(i).Key].CalculateTransitionsTable(Data.Instance.fr.Trees[tokens.ElementAt(i).Key].Root);
+				}
+			}
+			result = result.Remove(result.Length - 1);
+			result += "};\n";
+
+			result += "\t\t\tList<string> tokensID = new List<string> {";
+			for (int i = 0; i < tokens.Count; i++)
+			{
+				result += "\"" + tokens.Keys.ElementAt(i).Remove(0, 5) + "\",";
+			}
+			result = result.Remove(result.Length - 1);
+			result += "};\n";
+
 			return result;
 		}
 
@@ -314,82 +392,200 @@ namespace Proyecto_lenguajes
 						"\t\t\t\tint index = tokensVal.IndexOf(cadena);\n" +
 						"\t\t\t\ttkn = tokensID[index];\n" +
 						"\t\t\t}\n";
+			
+			for (int i = 0; i < Data.Instance.fr.Tokens.Count; i++)
+			{
+				if (TokenUsesSets(Data.Instance.fr.Tokens.ElementAt(i).Value))
+				{
+					string Token = Data.Instance.fr.Tokens.ElementAt(i).Key;
+					Token = Token.Remove(0, 5);
+					result +=	"\t\t\telse if (Eval" + Data.Instance.fr.Tokens.ElementAt(i).Key + "(cadena) == true){\n" +
+								"\t\t\t\ttkn = \"" + Token + "\";\n" +
+								"\t\t\t}\n";
+				}
+			}			
 
 			result += "\t\t\treturn tkn;\n";
 			result += "\t\t}\n";
+
+			for (int i = 0; i < Data.Instance.fr.Tokens.Count; i++)
+			{
+				if (TokenUsesSets(Data.Instance.fr.Tokens.ElementAt(i).Value))
+				{
+					result += GenerateScannerv2("Eval" + Data.Instance.fr.Trees.ElementAt(i).Key, Data.Instance.fr.Trees.ElementAt(i).Value);
+				}
+			}
 			return result;
 		}
 
-		internal bool TokenUsesSets(List<string> token)
+		public string GenerateScannerv2(string FooName, ExpressionTree Tree)
 		{
-			for (int i = 0; i < token.Count; i++)
+			string output = PrintFoo(FooName, Tree);
+
+			for (int i = 0; i < Tree.states.Count; i++)
 			{
-				if (Data.Instance.fr.Sets.ContainsKey(token[i]))
-				{
-					return true;
-				}
+				output += FooPrintTransFunctions(i, Tree);
+				NoFoo++;
 			}
-			return false;
+
+			return output;
 		}
 
-		internal string Concat(List<string> token)
+		private string PrintFoo(string FooName, ExpressionTree Tree)
+		{
+			string result = "";
+			result += "\t\tstatic bool " + FooName + "(string input)\n" +
+						"\t\t{\n" +						
+						"\t\t\tchar[] cinput = input.ToCharArray();\n" +
+						"\t\t\tbool aceptacion = false;\n" +
+						"\t\t\tQueue<char> AuxEntrada = new Queue<char>(cinput);\n" +
+						"\t\t\tint Estado = 0;\n" +
+						"\t\t\twhile(AuxEntrada.Count > 0)\n" +
+						"\t\t\t{\n" +
+						"\t\t\t\tchar ToConsume = AuxEntrada.Peek();\n";
+
+			result += FooPrintSwitch(Tree);
+			result += FooAcceptConditions();
+			result += "\t\t\t}\n";
+			result += FooAcceptConditionsv2(Tree);
+			result += "\t\t}\n";
+
+			return result;
+		}
+
+		private string FooAcceptConditions()
 		{
 			string result = "";
 
-			for (int i = 0; i < token.Count; i++)
-			{
-				if (token[i] != ".")
-				{					
-					result += token[i][1].ToString();
-				}
-			}
+			result += "\t\t\t\tif (Estado == -1)\n" +
+						"\t\t\t\t{\n" +
+						"\t\t\t\t\treturn false;\n" +
+						"\t\t\t\t}\n";
+
 			return result;
 		}
 
-		private string PrintTokens()
+		private string FooAcceptConditionsv2(ExpressionTree Tree)
 		{
 			string result = "";
 
-			result += "\t\t\tList<string> tokensVal = new List<string> {";
-			Dictionary<string, List<string>> tokens = Data.Instance.fr.Tokens;
-			for (int i = 0; i < tokens.Count; i++)
-			{
-				if (!TokenUsesSets(tokens.Values.ElementAt(i)))
-				{
-					result += "\"" + Concat(tokens.Values.ElementAt(i)) + "\",";
-				}
-				else
-				{
-					result += "\"\",";
-				}
-			}
-			result = result.Remove(result.Length - 1);
-			result += "};\n";
+			result += "\t\t\tif (";
 
-			result += "\t\t\tList<string> tokensID = new List<string> {";
-			for (int i = 0; i < tokens.Count; i++)
+			int STaccept = Tree.TerminalSymbolID - 1;
+			for (int i = 0; i < Tree.states.Count; i++)
 			{
-				result += "\"" + tokens.Keys.ElementAt(i).Remove(0,5) + "\",";				
+				if (Tree.states[i].states.Contains(STaccept))
+				{
+					result += "Estado == " + i.ToString() + " || ";
+				}
 			}
+			// eliminar ultimo " || "
 			result = result.Remove(result.Length - 1);
-			result += "};\n";
+			result = result.Remove(result.Length - 1);
+			result = result.Remove(result.Length - 1);
+			result = result.Remove(result.Length - 1);
+
+			result += ")\n" +
+						"\t\t\t{\n" +
+						"\t\t\t\treturn true;\n" +
+						"\t\t\t}\n" +
+						"\t\t\telse\n" +
+						"\t\t\t{\n" +
+						"\t\t\t\treturn false;\n" +
+						"\t\t\t}\n";
 
 			return result;
 		}
 
-		private string PrintActions(List<string> action)
+		private string FooPrintTransFunctions(int Estado, ExpressionTree Tree)
 		{
-			string result = "";		
-			
-			for (int i = 0; i < action.Count; i++)
-			{
-				if (action[i].Replace('\t'.ToString(), "").Replace(" ", "") != "")
-				{
-					string[] reservada = action[i].Split('=');
-					result += "{" + reservada[0] + ", \"" + reservada[1].Replace("'", "").Replace(" ", "") + "\"},";
-				}				
-			}			
+			string result = "";
 
+			result += "\t\tstatic int Trans" + NoFoo.ToString() + "(char input, ref Queue<char> Entrada)\n" +
+						"\t\t{\n" +
+						"\t\t\tint ret;\n" +
+						"\t\t\tswitch (input)\n" +
+						"\t\t\t{\n";
+
+			for (int i = 0; i < Tree.states[Estado].transitions.Length; i++)
+			{
+				if (Tree.states[Estado].transitions[i].Count > 0)
+				{
+					string Symb = Tree.symbols[i];
+					if (Symb[0] == '\'') // '<char>'
+					{
+						if (Symb == "'''")
+						{
+							result += "\t\t\t\tcase " + "'" + "\\" + "'':\n";
+						}
+						else if (Symb == "'\\'")
+						{
+							result += "\t\t\t\tcase " + "'" + "\\" + "\\" + "':\n";
+						}
+						else
+						{
+							result += "\t\t\t\tcase " + Symb + ":\n";
+						}
+						int NextState = GetStateID(Tree.states[Estado].transitions[i], Tree);
+
+						result += "\t\t\t\t\tret = " + NextState.ToString() + ";\n" +
+									"\t\t\t\t\tEntrada.Dequeue();\n" +
+									"\t\t\t\t\tbreak;\n";
+
+					}
+				}
+			}
+
+			result += "\t\t\t\tdefault:\n" +
+						"\t\t\t\t\tret = -1;\n" +
+						"\t\t\t\t\tbreak;\n" +
+						"\t\t\t}\n";
+
+			for (int i = 0; i < Tree.states[Estado].transitions.Length; i++)
+			{
+				if (Tree.states[Estado].transitions[i].Count > 0)
+				{
+					string Symb = Tree.symbols[i];
+					if (Symb[0] != '\'') // SET
+					{
+						int NextState = GetStateID(Tree.states[Estado].transitions[i], Tree);
+
+						result += "\t\t\tif (" + Symb + ".IndexOf(input) >= 0)\n" +
+									"\t\t\t{\n" +
+									"\t\t\t\tret = " + NextState.ToString() + ";\n" +
+									"\t\t\t\tEntrada.Dequeue();\n" +
+									"\t\t\t}\n";
+					}
+				}
+			}
+
+			result += "\t\t\treturn ret;\n" +
+						"\t\t}\n";
+			return result;
+		}
+
+		private string FooPrintSwitch(ExpressionTree Tree)
+		{
+			string result = "";
+			result += "\t\t\t\tswitch (Estado)\n" +
+							"\t\t\t\t{\n";
+
+			for (int i = 0; i < Tree.states.Count; i++)
+			{
+				result += "\t\t\t\t\tcase " + i.ToString() + ":\n" +
+							"\t\t\t\t\t\tEstado = Trans" + NoCase.ToString() + "(ToConsume, ref AuxEntrada);\n";
+
+				NoCase++;
+				int STaccept = Tree.TerminalSymbolID - 1;
+				string acceptStr = Tree.states[i].states.Contains(STaccept) ? "aceptacion = true;" : "aceptacion = false;";
+
+				result += "\t\t\t\t\t\t" + acceptStr + "\n" +
+							"\t\t\t\t\t\tbreak;\n";
+			}
+
+			result += "\t\t\t\t\tdefault:\n" +
+							"\t\t\t\t\t\tbreak;\n" +
+							"\t\t\t\t}\n";
 			return result;
 		}
 	}

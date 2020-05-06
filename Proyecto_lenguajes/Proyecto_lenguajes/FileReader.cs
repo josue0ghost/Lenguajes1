@@ -496,7 +496,7 @@ namespace Proyecto_lenguajes
 
 			List<string> tlist = new List<string>();
 			string set = "";							// la variable set se utiliza para los st que deberían estar definidos en los Sets
-			//tlist.Add("(");								// Para (<ER>).#
+			tlist.Add("(");								// Para (<ER>).#
 			for (int i = 0; i < RE.Length; i++)
 			{
 				// maneja tokens de tipo '<char>'
@@ -676,6 +676,9 @@ namespace Proyecto_lenguajes
 				tlist.Add(set);
 			}
 
+			tlist.Add(")");
+			tlist.Add(".");
+			tlist.Add("#");
 			// Analizar errores en ER
 			ExpressionTree ET = new ExpressionTree();
 			ET.CreateTree(tlist, id);
@@ -685,9 +688,14 @@ namespace Proyecto_lenguajes
 				this.Error = ET.Error;
 				return !ValidToken;
 			}
-
-			Tokens.Add(id, tlist);
 			Trees.Add(id, ET);
+
+			tlist.RemoveAt(0);
+			tlist.RemoveAt(tlist.Count - 1);
+			tlist.RemoveAt(tlist.Count - 1);
+			tlist.RemoveAt(tlist.Count - 1);
+			Tokens.Add(id, tlist);
+			
 
 			return ValidToken;
 		}

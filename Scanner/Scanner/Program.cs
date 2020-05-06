@@ -78,7 +78,6 @@ namespace Scanner
 					Entrada.Dequeue();
 					token = "";
 					Estado = 0;
-					Entrada.Dequeue();
 				}
 			}
 			if (Estado == 0 || Estado == 1 || Estado == 4 || Estado == 5)
@@ -258,7 +257,524 @@ namespace Scanner
 				int index = tokensVal.IndexOf(cadena);
 				tkn = tokensID[index];
 			}
+			else if (EvalTOKEN1(cadena) == true){
+				tkn = "1";
+			}
+			else if (EvalTOKEN2(cadena) == true){
+				tkn = "2";
+			}
+			else if (EvalTOKEN3(cadena) == true){
+				tkn = "3";
+			}
 			return tkn;
+		}
+		static bool EvalTOKEN1(string input)
+		{
+			char[] cinput = input.ToCharArray();
+			bool aceptacion = false;
+			Queue<char> AuxEntrada = new Queue<char>(cinput);
+			int Estado = 0;
+			while(AuxEntrada.Count > 0)
+			{
+				char ToConsume = AuxEntrada.Peek();
+				switch (Estado)
+				{
+					case 0:
+						Estado = Trans8(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 1:
+						Estado = Trans9(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 2:
+						Estado = Trans10(ToConsume, ref AuxEntrada);
+						aceptacion = true;
+						break;
+					case 3:
+						Estado = Trans11(ToConsume, ref AuxEntrada);
+						aceptacion = true;
+						break;
+					default:
+						break;
+				}
+				if (Estado == -1)
+				{
+					return false;
+				}
+			}
+			if (Estado == 2 || Estado == 3)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		static int Trans8(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (DIGITO.IndexOf(input) >= 0)
+			{
+				ret = 3;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans9(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (DIGITO.IndexOf(input) >= 0)
+			{
+				ret = 1;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans10(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (DIGITO.IndexOf(input) >= 0)
+			{
+				ret = 3;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans11(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (DIGITO.IndexOf(input) >= 0)
+			{
+				ret = 3;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static bool EvalTOKEN2(string input)
+		{
+			char[] cinput = input.ToCharArray();
+			bool aceptacion = false;
+			Queue<char> AuxEntrada = new Queue<char>(cinput);
+			int Estado = 0;
+			while(AuxEntrada.Count > 0)
+			{
+				char ToConsume = AuxEntrada.Peek();
+				switch (Estado)
+				{
+					case 0:
+						Estado = Trans12(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 1:
+						Estado = Trans13(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 2:
+						Estado = Trans14(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 3:
+						Estado = Trans15(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 4:
+						Estado = Trans16(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 5:
+						Estado = Trans17(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 6:
+						Estado = Trans18(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 7:
+						Estado = Trans19(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 8:
+						Estado = Trans20(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 9:
+						Estado = Trans21(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 10:
+						Estado = Trans22(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 11:
+						Estado = Trans23(ToConsume, ref AuxEntrada);
+						aceptacion = true;
+						break;
+					default:
+						break;
+				}
+				if (Estado == -1)
+				{
+					return false;
+				}
+			}
+			if (Estado == 11)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		static int Trans12(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				case '"':
+					ret = 7;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				case '\'':
+					ret = 8;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+		static int Trans13(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (CHARSET.IndexOf(input) >= 0)
+			{
+				ret = 3;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans14(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (CHARSET.IndexOf(input) >= 0)
+			{
+				ret = 4;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans15(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				case '"':
+					ret = 5;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+		static int Trans16(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				case '\'':
+					ret = 5;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+		static int Trans17(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+		static int Trans18(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				case '"':
+					ret = 7;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				case '\'':
+					ret = 8;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+		static int Trans19(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (CHARSET.IndexOf(input) >= 0)
+			{
+				ret = 9;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans20(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (CHARSET.IndexOf(input) >= 0)
+			{
+				ret = 10;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans21(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				case '"':
+					ret = 11;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+		static int Trans22(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				case '\'':
+					ret = 11;
+					token += input.ToString();
+					Entrada.Dequeue();
+					break;
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+		static int Trans23(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			return ret;
+		}
+		static bool EvalTOKEN3(string input)
+		{
+			char[] cinput = input.ToCharArray();
+			bool aceptacion = false;
+			Queue<char> AuxEntrada = new Queue<char>(cinput);
+			int Estado = 0;
+			while(AuxEntrada.Count > 0)
+			{
+				char ToConsume = AuxEntrada.Peek();
+				switch (Estado)
+				{
+					case 0:
+						Estado = Trans24(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 1:
+						Estado = Trans25(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 2:
+						Estado = Trans26(ToConsume, ref AuxEntrada);
+						aceptacion = false;
+						break;
+					case 3:
+						Estado = Trans27(ToConsume, ref AuxEntrada);
+						aceptacion = true;
+						break;
+					default:
+						break;
+				}
+				if (Estado == -1)
+				{
+					return false;
+				}
+			}
+			if (Estado == 3)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		static int Trans24(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (LETRA.IndexOf(input) >= 0)
+			{
+				ret = 3;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans25(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (LETRA.IndexOf(input) >= 0)
+			{
+				ret = 1;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			if (DIGITO.IndexOf(input) >= 0)
+			{
+				ret = 1;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans26(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (LETRA.IndexOf(input) >= 0)
+			{
+				ret = 3;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
+		}
+		static int Trans27(char input, ref Queue<char> Entrada)
+		{
+			int ret;
+			switch (input)
+			{
+				default:
+					ret = -1;
+					break;
+			}
+			if (LETRA.IndexOf(input) >= 0)
+			{
+				ret = 3;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			if (DIGITO.IndexOf(input) >= 0)
+			{
+				ret = 3;
+				token += input.ToString();
+				Entrada.Dequeue();
+			}
+			return ret;
 		}
 	}
 }
