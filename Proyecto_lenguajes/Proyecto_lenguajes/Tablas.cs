@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Microsoft.CSharp;
+using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -137,13 +141,34 @@ namespace Proyecto_lenguajes
 			if (saveFileDialog.ShowDialog() == DialogResult.OK)
 			{				
 				string output = sc.GenerateScanner();
-
+				string path = "";
 				using (FileStream fs = (FileStream)saveFileDialog.OpenFile())
 				{
 					byte[] buffer = Encoding.UTF8.GetBytes(output);
 					fs.Write(buffer, 0, buffer.Length);
+					path = fs.Name;
 				}
+
+				CsCompile(path);
 			}
 		}
+
+		private void CsCompile(string sourceName)
+		{
+			string language = CSharpCodeProvider.GetLanguageFromExtension(Path.GetExtension(sourceName));
+			CodeDomProvider codeDomProvider = CSharpCodeProvider.CreateProvider(language);
+			CompilerParameters compilerParams = new CompilerParameters();
+			compilerParams.GenerateExecutable = true;
+			compilerParams.GenerateInMemory = true;
+			compilerParams.IncludeDebugInformation = false;
+
+			string extAssembly = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),"Extensibility.dll");
+			compilerParams.ReferencedAssemblies.Add(extAssembly);
+			compilerParams.ReferencedAssemblies.Add("System.dll");
+			compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
+			compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
+
+			codeDomProvider.CompileAssemblyFromFile(compilerParams, filepath);
+		}	
 	}
 }

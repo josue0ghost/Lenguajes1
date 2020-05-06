@@ -324,7 +324,6 @@ namespace Scanner
 			if (DIGITO.IndexOf(input) >= 0)
 			{
 				ret = 3;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -341,7 +340,6 @@ namespace Scanner
 			if (DIGITO.IndexOf(input) >= 0)
 			{
 				ret = 1;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -358,7 +356,6 @@ namespace Scanner
 			if (DIGITO.IndexOf(input) >= 0)
 			{
 				ret = 3;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -375,7 +372,6 @@ namespace Scanner
 			if (DIGITO.IndexOf(input) >= 0)
 			{
 				ret = 3;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -463,12 +459,10 @@ namespace Scanner
 			{
 				case '"':
 					ret = 7;
-					token += input.ToString();
 					Entrada.Dequeue();
 					break;
 				case '\'':
 					ret = 8;
-					token += input.ToString();
 					Entrada.Dequeue();
 					break;
 				default:
@@ -489,7 +483,6 @@ namespace Scanner
 			if (CHARSET.IndexOf(input) >= 0)
 			{
 				ret = 3;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -506,7 +499,6 @@ namespace Scanner
 			if (CHARSET.IndexOf(input) >= 0)
 			{
 				ret = 4;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -518,7 +510,6 @@ namespace Scanner
 			{
 				case '"':
 					ret = 5;
-					token += input.ToString();
 					Entrada.Dequeue();
 					break;
 				default:
@@ -534,7 +525,6 @@ namespace Scanner
 			{
 				case '\'':
 					ret = 5;
-					token += input.ToString();
 					Entrada.Dequeue();
 					break;
 				default:
@@ -561,12 +551,10 @@ namespace Scanner
 			{
 				case '"':
 					ret = 7;
-					token += input.ToString();
 					Entrada.Dequeue();
 					break;
 				case '\'':
 					ret = 8;
-					token += input.ToString();
 					Entrada.Dequeue();
 					break;
 				default:
@@ -587,7 +575,6 @@ namespace Scanner
 			if (CHARSET.IndexOf(input) >= 0)
 			{
 				ret = 9;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -604,7 +591,6 @@ namespace Scanner
 			if (CHARSET.IndexOf(input) >= 0)
 			{
 				ret = 10;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -616,7 +602,6 @@ namespace Scanner
 			{
 				case '"':
 					ret = 11;
-					token += input.ToString();
 					Entrada.Dequeue();
 					break;
 				default:
@@ -632,7 +617,6 @@ namespace Scanner
 			{
 				case '\'':
 					ret = 11;
-					token += input.ToString();
 					Entrada.Dequeue();
 					break;
 				default:
@@ -708,7 +692,6 @@ namespace Scanner
 			if (LETRA.IndexOf(input) >= 0)
 			{
 				ret = 3;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -725,13 +708,11 @@ namespace Scanner
 			if (LETRA.IndexOf(input) >= 0)
 			{
 				ret = 1;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			if (DIGITO.IndexOf(input) >= 0)
 			{
 				ret = 1;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -748,7 +729,6 @@ namespace Scanner
 			if (LETRA.IndexOf(input) >= 0)
 			{
 				ret = 3;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
@@ -765,13 +745,11 @@ namespace Scanner
 			if (LETRA.IndexOf(input) >= 0)
 			{
 				ret = 3;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			if (DIGITO.IndexOf(input) >= 0)
 			{
 				ret = 3;
-				token += input.ToString();
 				Entrada.Dequeue();
 			}
 			return ret;
