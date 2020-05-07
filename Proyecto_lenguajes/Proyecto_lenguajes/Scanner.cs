@@ -148,9 +148,10 @@ namespace Proyecto_lenguajes
 						"\t\t\tstring tkn = obtenerToken(token);\n" +
 						"\t\t\tConsole.WriteLine(token + \" = \" + tkn);\n" +
 						"\t\t\ttoken = \"\";\n" +
-						"\t\t\tEstado = 0;\n" +
+						"\t\t\tEstado = 0;\n" +						
+						"\t\t\t}\n" +
 						"\t\t\tEntrada.Dequeue();\n" +
-						"\t\t\t}}\n";
+						"\t\t\t}\n";
 			result +=   "\t\t\t}\n";
 			result += AcceptConditionsv2();
 			result +=	"\t\t\tConsole.WriteLine(\"TERMINADO\");\n";
@@ -202,7 +203,7 @@ namespace Proyecto_lenguajes
 						"\t\t\t\t{\n" +
 						"\t\t\t\t\tstring tkn = obtenerToken(token);\n" +
 						"\t\t\t\t\tConsole.WriteLine(token + \" = \" + tkn);\n" +
-						//"\t\t\t\t\tEntrada.Dequeue();\n" +
+						"\t\t\t\t\tif (tkn == \"NO ENCONTRADO\") { Entrada.Dequeue(); }\n" +
 						"\t\t\t\t\ttoken = \"\";\n"  +
 						"\t\t\t\t\tEstado = 0;\n" +
 						"\t\t\t\t\taceptacion = false;\n" +
@@ -211,7 +212,7 @@ namespace Proyecto_lenguajes
 						"\t\t\t\t{\n" +
 						"\t\t\t\t\tstring tkn = obtenerToken(token);\n" +
 						"\t\t\t\t\tConsole.WriteLine(token + \" = \" + tkn);\n" +
-						//"\t\t\t\t\tEntrada.Dequeue();\n" +
+						"\t\t\t\t\tif (tkn == \"NO ENCONTRADO\") { Entrada.Dequeue(); }\n" +
 						"\t\t\t\t\ttoken = \"\";\n" +
 						"\t\t\t\t\tEstado = 0;\n" +
 						"\t\t\t\t}\n";
@@ -248,6 +249,8 @@ namespace Proyecto_lenguajes
 						"\t\t\t\tstring tkn = obtenerToken(token);\n" +
 						"\t\t\t\tConsole.WriteLine(token + \" = \" + tkn);\n" +
 						"\t\t\t\ttoken = \"\";\n" +
+						"\t\t\t}else{\n" +
+						"\t\t\t\tConsole.WriteLine(token + \" = NO ENCONTRADO\");\n" +
 						"\t\t\t}\n";
 			 
 			return result;
@@ -454,7 +457,7 @@ namespace Proyecto_lenguajes
 
 			result += "\t\tstatic string obtenerToken(string cadena)\n" +
 						"\t\t{\n" +
-						"\t\t\tstring tkn = \"\";\n";
+						"\t\t\tstring tkn = \"NO ENCONTRADO\";\n";
 			result += PrintTokens();
 			result += "\t\t\tDictionary<int, string> actions = new Dictionary<int, string>(){";
 
@@ -471,7 +474,7 @@ namespace Proyecto_lenguajes
 						"\t\t\t{\n" +
 						"\t\t\t\ttkn = actions.FirstOrDefault(x => x.Value.Equals(cadena, StringComparison.OrdinalIgnoreCase)).Key.ToString();\n" +
 						"\t\t\t}\n" +
-						"\t\t\telse if (tokensVal.Contains(cadena))\n" +
+						"\t\t\telse if (tokensVal.Contains(cadena) && cadena != \"\")\n" +
 						"\t\t\t{\n" +
 						"\t\t\t\tint index = tokensVal.IndexOf(cadena);\n" +
 						"\t\t\t\ttkn = tokensID[index];\n" +
